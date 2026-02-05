@@ -2,8 +2,8 @@
 import { SignOutButton } from '@clerk/nextjs'
 import { LogOut } from 'lucide-react'
 import React from 'react'
-import SearchBar from './SearchBar'
-import { getInitials } from '../utils/helper'
+import SearchBar from '@/app/components/SearchBar'
+import { getInitials } from '@/app/utils/helper'
 import { useUser } from '@clerk/nextjs'
 
 function Header() {
@@ -16,7 +16,7 @@ function Header() {
     console.log(user)
 
     return (
-        <header className='border max-w-6xl mt-2 rounded bg-amber-100 mx-auto p-7 flex justify-between items-center'>
+        <header className='drop-shadow-lg max-w-6xl mt-2 rounded bg-amber-100 mx-auto p-7 flex justify-between items-center'>
             <p className="font-bold text-3xl">
                 Notizen
             </p>
