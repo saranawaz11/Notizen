@@ -1,8 +1,22 @@
 import React from 'react'
 import Card from '../components/Card'
 import { Plus } from 'lucide-react'
+import db from '../db'
+import { notesTable } from '../db/schema'
 
-export default function page() {
+
+export default async function page() {
+    const results = await db.select({
+        id: notesTable.id,
+        ticketDate: notesTable.createdAt,
+        title: notesTable.title,
+        content: notesTable.content
+    }).from(notesTable)
+
+
+    console.log('Result is:- ', results);
+
+
     return (
         <div>
             <div className='container mx-auto'>
