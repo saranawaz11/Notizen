@@ -3,8 +3,15 @@
 import { Pencil, Pin, PinOff, Trash } from 'lucide-react'
 import React, { useState } from 'react'
 import EditModal from './EditModal'
+import { GetNotesType } from '@/lib/queries/GetNotes'
 
-export default function Card() {
+type Props = {
+    data: GetNotesType[number]
+}
+
+export default function Card(
+    { data }: Props
+) {
     const content =
         'He left on Friday. He was not supposed to leave but he did and now I do not know.'
 
@@ -15,16 +22,16 @@ export default function Card() {
     })
 
     const [modalIsOpen, setModalIsOpen] = useState(false)
-    const [isPinned, setIsPinned] = useState(false)
+    const [isPinned, setIsPinned] = useState(data.pinned)
 
     const tags = ['endregion', 'marketing', 'books', 'tags']
 
     return (
         <>
-            <div className="bg-amber-100 rounded hover:shadow-lg p-4">
+            <div className="bg-amber-100 hover:bg-amber-200 rounded hover:shadow-lg p-4">
                 <div className="flex justify-between items-center">
                     <div>
-                        <p className="font-bold text-xl">He left on Friday</p>
+                        <p className="font-bold text-xl">{data.title}</p>
                         <p className="text-sm text-primary">{formattedDate}</p>
                     </div>
 
@@ -32,7 +39,7 @@ export default function Card() {
                         onClick={() => setIsPinned(!isPinned)}
                         className="hover:bg-amber-200 h-8 w-8 grid place-content-center rounded-sm"
                     >
-                        {isPinned ? <Pin size={18} /> : <PinOff size={18} />}
+                        {isPinned ? <Pin size={18} className='hover:scale-120 transition-transform duration-300 cursor-pointer' /> : <PinOff size={18} className='hover:scale-120 transition-transform duration-300 cursor-pointer' />}
                     </button>
                 </div>
 

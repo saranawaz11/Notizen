@@ -1,5 +1,6 @@
 import React from 'react'
 import Header from '@/app/components/Header'
+import { Plus } from 'lucide-react'
 
 export default function DashboardLayout(
     { children }: {
@@ -10,6 +11,7 @@ export default function DashboardLayout(
         <div>
             <Header/>
             {children}
+
         </div>
     )
 }
