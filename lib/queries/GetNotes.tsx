@@ -8,7 +8,8 @@ export async function getNotes() {
         ticketDate: notesTable.createdAt,
         title: notesTable.title,
         content: notesTable.content,
-        pinned: notesTable.pinned
+        pinned: notesTable.pinned,
+        updatedAt: notesTable.updatedAt
     }).from(notesTable)
     return results;
 }

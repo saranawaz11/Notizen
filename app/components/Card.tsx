@@ -4,6 +4,7 @@ import { Pencil, Pin, PinOff, Trash } from 'lucide-react'
 import React, { useState } from 'react'
 import EditModal from './EditModal'
 import { GetNotesType } from '@/lib/queries/GetNotes'
+import { useRouter } from 'next/navigation'
 
 type Props = {
     data: GetNotesType[number]
@@ -15,20 +16,27 @@ export default function Card(
     const content =
         'He left on Friday. He was not supposed to leave but he did and now I do not know.'
 
-    const formattedDate = new Date().toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: '2-digit',
-    })
+    const formattedDate = data.updatedAt
+        ? new Date(data.updatedAt).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: '2-digit',
+        })
+        : 'No date';
+
 
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [isPinned, setIsPinned] = useState(data.pinned)
 
     const tags = ['endregion', 'marketing', 'books', 'tags']
 
+    const router = useRouter()
+
     return (
         <>
-            <div className="bg-amber-100 hover:bg-amber-200 rounded hover:shadow-lg p-4">
+            <div onClick={() => {
+                router.push(`/notes/${data.id}`)
+            }} className="bg-amber-100 hover:bg-amber-200 rounded hover:shadow-lg p-4">
                 <div className="flex justify-between items-center">
                     <div>
                         <p className="font-bold text-xl">{data.title}</p>
@@ -44,7 +52,7 @@ export default function Card(
                 </div>
 
                 <div className="line-clamp-1 mt-2">
-                    <p>{content}</p>
+                    <p>{data.content}</p>
                 </div>
 
                 <div className="flex justify-between items-center gap-4 mt-2">
