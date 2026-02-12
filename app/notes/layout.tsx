@@ -1,0 +1,15 @@
+import React from 'react'
+import NotesHeader from './_components/Header'
+
+export default function layout(
+    { children }: {
+        children: React.ReactNode
+    }
+) {
+  return (
+    <div>
+        <NotesHeader/>
+        {children}
+    </div>
+  )
+}

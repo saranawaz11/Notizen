@@ -41,6 +41,7 @@ export default function Card(
                     <div>
                         <p className="font-bold text-xl">{data.title}</p>
                         <p className="text-sm text-primary">{formattedDate}</p>
+                        
                     </div>
 
                     <button
