@@ -13,8 +13,8 @@ export default function Heading() {
 
     return (
         <div className="max-w-4xl space-y-6">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-[#626868]">
-                Welcome to <span className="text-[#655560]">Notizen</span> <br />
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold text-[#626868] dark:text-[#C4CAD0]">
+                Welcome to <span className="text-[#655560] dark:text-white">Notizen</span> <br />
                 Where Your Thoughts Find Structure.
             </h1>
 
@@ -43,7 +43,7 @@ export default function Heading() {
                 <Button asChild>
                     <Link href="/notes">
                         Enter Notizen
-                        <ArrowRight className="h-4 w-4 ml-2" />
+                        <ArrowRight className="h-4 w-4" />
                     </Link>
                 </Button>
             )}

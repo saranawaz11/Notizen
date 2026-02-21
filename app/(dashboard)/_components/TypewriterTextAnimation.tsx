@@ -23,7 +23,7 @@ export function TypewriterTextAnimation({ text }: { text: string }) {
                             duration: 0.4,
                             times: [0, 0.1, 1]
                         }}
-                        className="absolute bottom-[3px] left-px right-0 top-[3px] bg-neutral-950" />
+                        className="absolute bottom-[3px] left-px right-0 top-[3px] bg-neutral-950 dark:bg-[#C4CAD0]" />
                 </motion.span>
 
             ))}

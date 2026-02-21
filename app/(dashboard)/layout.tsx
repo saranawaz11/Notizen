@@ -1,20 +1,17 @@
-import React from 'react'
-import Navbar from './_components/Navbar'
-// import Header from '@/app/components/Header'
-// import { Plus } from 'lucide-react'
+import React from "react";
+import Navbar from "./_components/Navbar";
 
-export default function DashboardLayout(
-    { children }: {
-        children: React.ReactNode
-    }
-) {
+export default function DashboardLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     return (
-        <div className="dark:bg-[#1F1F1F]">
+        <div className="dark:bg-[#1F1F1F] min-h-screen flex flex-col">
             <Navbar />
-            <main className="h-full pt-40">
+            <main className="flex-1 flex flex-col">
                 {children}
             </main>
-            {/* <Footer /> */}
         </div>
-    )
+    );
 }
