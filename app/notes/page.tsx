@@ -28,9 +28,13 @@ const NotesPage = () => {
     }
 
     return (
-        <Button onClick={onCreate}>
-            Create a note
-        </Button>
+        // <Button onClick={onCreate}>
+        //     Create a note
+        // </Button>
+
+        <div>
+            <h2>Notes page</h2>
+        </div>
     )
 }
 export default NotesPage
