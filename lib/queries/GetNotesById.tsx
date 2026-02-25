@@ -1,4 +1,3 @@
-// lib/queries/getNoteById.ts
 import db from '@/app/db'
 import { notesTable } from '@/app/db/schema'
 import { eq } from 'drizzle-orm'

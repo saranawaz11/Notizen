@@ -93,7 +93,7 @@ export default function Navigation() {
 
                 <div>
                     <UserItem />
-                    <Item icon={Search} />
+                    <Item icon={Search} label='Search' isSearch />
                 </div>
 
 

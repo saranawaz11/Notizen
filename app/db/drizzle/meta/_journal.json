@@ -15,6 +15,13 @@
       "when": 1770467067304,
       "tag": "0001_slim_vin_gonzales",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772046399426,
+      "tag": "0002_brainy_scourge",
+      "breakpoints": true
     }
   ]
 }
