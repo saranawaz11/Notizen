@@ -1,10 +1,11 @@
 'use client'
 import useIsMobile from '@/hooks/use-is-mobile';
 import { cn } from '@/lib/utils';
-import { ChevronsLeft } from 'lucide-react';
+import { ChevronsLeft, Search } from 'lucide-react';
 import React, { ComponentRef, useCallback, useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation';
 import UserItem from './UserItem';
+import Item from './Item';
 
 export default function Navigation() {
     const sidebarRef = useRef<ComponentRef<'aside'>>(null);
@@ -92,6 +93,7 @@ export default function Navigation() {
 
                 <div>
                     <UserItem />
+                    <Item icon={Search} />
                 </div>
 
 
