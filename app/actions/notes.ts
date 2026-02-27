@@ -1,6 +1,6 @@
 'use server'
 import { eq } from 'drizzle-orm';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
 import db from '../db';
 import { notesTable } from '../db/schema';
 

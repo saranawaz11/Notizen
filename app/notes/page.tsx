@@ -2,19 +2,23 @@
 
 'use client'
 
-import { createNote } from '@/app/actions/createNote'
 import { Button } from '@/components/ui/button'
+import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import Image from 'next/image'
+import { PlusCircle } from 'lucide-react'
 import { useTransition } from 'react'
+import { createNote } from '../actions/notes'
 
 const NotesPage = () => {
     const router = useRouter()
+    const { user } = useUser();
     const [isPending, startTransition] = useTransition()
 
     const onCreate = () => {
         startTransition(() => {
-            const promise = createNote()
+            const promise = createNote('Untitled')
                 .then((notesId) => {
                     router.push(`/notes/${notesId}`)
                 })
@@ -28,41 +32,25 @@ const NotesPage = () => {
     }
 
     return (
-        // <Button onClick={onCreate}>
-        //     Create a note
-        // </Button>
-
-        <div>
-            <h2>Notes page</h2>
+        <div className="flex space-y-4 h-full place-items-center justify-center items-center flex-col">
+            <Image
+                src={'/mpty.png'}
+                height={'300'}
+                width={'300'}
+                alt="empty"
+                className="dark:hidden" />
+            <Image
+                src={'/mpty.png'}
+                height={300}
+                width={300}
+                alt="empty"
+                className="hidden dark:block" />
+            <h2 className="text-lg font-medium">Welcome to {user?.firstName}&apos;s Notizen</h2>
+            <Button onClick={onCreate}>
+                <PlusCircle className="h-4 w-4 mr-2" />
+                Create a note
+            </Button>
         </div>
     )
 }
 export default NotesPage
-
-// import React from 'react'
-
-// export default async function page(
-//     {
-//         searchParams,
-//     }: {
-//         searchParams: Promise<{ [key: string]: string | undefined }>
-//     }) {
-
-//     try {
-//         const { notesId } = await searchParams;
-//         console.log('Notes id is:- ', notesId);
-
-//         if (notesId) {
-//             return(
-//                 <div className='max-w-6xl bg-pink-300 mx-auto p-10'>
-//                     <h2>{notesId}</h2>
-//                 </div>
-//             )
-//         }
-
-//     } catch (e) {
-//         if (e instanceof Error) {
-//             throw e
-//         }
-//     }
-// }
