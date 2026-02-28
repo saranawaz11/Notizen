@@ -1,11 +1,13 @@
 'use client'
 import useIsMobile from '@/hooks/use-is-mobile';
 import { cn } from '@/lib/utils';
-import { ChevronsLeft, Search } from 'lucide-react';
-import React, { ComponentRef, useCallback, useEffect, useRef, useState } from 'react'
-import { usePathname } from 'next/navigation';
+import { ChevronsLeft, PlusCircle, Search } from 'lucide-react';
+import React, { ComponentRef, startTransition, useCallback, useEffect, useRef, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation';
 import UserItem from './UserItem';
 import Item from './Item';
+import { createNote } from '@/app/actions/notes';
+import { toast } from 'sonner';
 
 export default function Navigation() {
     const sidebarRef = useRef<ComponentRef<'aside'>>(null);
@@ -82,21 +84,37 @@ export default function Navigation() {
         setTimeout(() => setIsResetting(false), 300);
     };
 
+    const router = useRouter()
+
+    const handleCreate = () => {
+        startTransition(() => {
+            const promise = createNote('Untitled')
+                .then((notesId) => {
+                    router.push(`/notes/${notesId}`)
+                })
+
+            toast.promise(promise, {
+                loading: 'Creating a new note...',
+                success: 'New note created!',
+                error: 'Failed to create a new note'
+            })
+        })
+    }
+
     return (
         <div>
             <aside ref={sidebarRef} className={cn("group/sidebar h-full bg-secondary w-60 z-[99999] overflow-y-auto relative flex flex-col", isResetting && 'transition ease-in-out duration-300',
                 isMobile && 'w-0'
             )}>
                 <div onClick={collapse} className={cn("h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100", isMobile && 'opacity-100')} role="button">
-                    <ChevronsLeft className="h-6 w-6"/>
+                    <ChevronsLeft className="h-6 w-6" />
                 </div>
 
                 <div>
                     <UserItem />
                     <Item icon={Search} label='Search' isSearch />
+                    <Item onClick={handleCreate} label='New Page' icon={PlusCircle} />
                 </div>
-
-
             </aside>
 
         </div>
