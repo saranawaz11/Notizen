@@ -19,14 +19,15 @@ interface DocumentListProps {
 const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
     const params = useParams()
     const router = useRouter()
-    const [notes, setNotes] = useState<NoteSelectSchemaType[]>([])
+    const [notes, setNotes] = useState<NoteSelectSchemaType[] | undefined>(undefined)
     const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
     useEffect(() => {
         const fetchNotes = async () => {
-            const url = parentDocumentId 
-                ? `/api/notes?parentDocument=${parentDocumentId}` 
+            const url = parentDocumentId
+                ? `/api/notes?parentDocument=${parentDocumentId}`
                 : '/api/notes'
+
             const res = await fetch(url)
             if (!res.ok) return;
             const data = await res.json()
@@ -46,7 +47,7 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
         router.push(`/documents/${documentId}`)
     }
 
-    if (!notes.length) {
+    if (notes === undefined) {
         return (
             <div>
                 <Item.skeleton level={level} />
@@ -59,12 +60,16 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
             </div>
         )
     }
-
     return (
         <>
-            <p style={{ paddingLeft: level ? `${(level * 12) + 25}px` : undefined }}
-                className={cn("hidden text-sm font-medium text-muted-foreground/80",
-                    expanded && 'last:block', level === 0 && 'hidden')}>
+            <p
+                style={{ paddingLeft: level ? `${(level * 12) + 25}px` : undefined }}
+                className={cn(
+                    "hidden text-sm font-medium text-muted-foreground/80",
+                    !notes.length && "last:block",
+                    level === 0 && "hidden"
+                )}
+            >
                 No pages inside
             </p>
             {notes.map((note) => (
