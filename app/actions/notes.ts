@@ -28,3 +28,37 @@ export async function createNote(title: string, parentDocument?: number) {
 
     return note.id;
 }
+
+import { and } from 'drizzle-orm';
+
+export async function getTrash() {
+    const { userId } = await auth();
+    if (!userId) throw new Error('Not Authenticated');
+
+    const notes = await db.select()
+        .from(notesTable)
+        .where(
+            and(
+                eq(notesTable.userId, userId),
+                eq(notesTable.isArchived, true)
+            )
+        );
+
+    return notes;
+}
+export async function restoreNote(id: number) {
+    const { userId } = await auth();
+    if (!userId) throw new Error('Not Authenticated');
+
+    await db.update(notesTable)
+        .set({ isArchived: false })
+        .where(eq(notesTable.id, id));
+}
+
+export async function removeNote(id: number) {
+    const { userId } = await auth();
+    if (!userId) throw new Error('Not Authenticated');
+
+    await db.delete(notesTable)
+        .where(eq(notesTable.id, id));
+}

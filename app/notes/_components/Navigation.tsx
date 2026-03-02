@@ -10,6 +10,7 @@ import { createNote } from '@/app/actions/notes';
 import { toast } from 'sonner';
 import DocumentList from './DocumentList';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import TrashBox from './TrashBox';
 
 export default function Navigation() {
     const sidebarRef = useRef<ComponentRef<'aside'>>(null);
@@ -39,13 +40,16 @@ export default function Navigation() {
         document.removeEventListener('mouseup', handleMouseUp);
     };
 
-    const handleMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        event.preventDefault();
-        event.stopPropagation();
-        isResizingRef.current = true;
-        document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-    };
+    const handleMousedown = (
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>
+    ) => {
+        event.preventDefault()
+        event.stopPropagation()
+        isResizingRef.current = true
+        document.addEventListener('mousemove', handleMouseMove)
+        document.addEventListener('mouseup', handleMouseUp)
+    }
+
 
     const collapseSidebar = useCallback(() => {
         if (sidebarRef.current && navbarRef.current) {
@@ -127,10 +131,15 @@ export default function Navigation() {
                             <Item icon={Trash} label="Trash" />
                         </PopoverTrigger>
                         <PopoverContent className="p-0 w-72" side={isMobile ? 'bottom' : 'right'}>
-                            {/* <TrashBox/> */}
+                            <TrashBox />
                         </PopoverContent>
                     </Popover>
                 </div>
+
+                <div
+                    onMouseDown={handleMousedown}
+                    onClick={resetWidth}
+                    className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0" />
             </aside>
 
         </div>
