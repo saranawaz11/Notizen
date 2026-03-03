@@ -44,7 +44,7 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
     }
 
     const onRedirect = (documentId: number) => {
-        router.push(`/documents/${documentId}`)
+        router.push(`/notes/${documentId}`)
     }
 
     if (notes === undefined) {

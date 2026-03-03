@@ -4,6 +4,7 @@ import { ClerkProvider } from '@clerk/nextjs'
 
 import "./globals.css";
 import { ThemeProvider } from "./components/Theme-Provider";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,7 +38,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <EdgeStoreProvider>{children}</EdgeStoreProvider>
           </ThemeProvider>
         </body>
       </html>
