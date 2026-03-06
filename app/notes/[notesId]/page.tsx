@@ -4,11 +4,12 @@ import { getNoteById } from "@/lib/queries/GetNotesById";
 export default async function NotesIdPage({
     params,
 }: {
-    params: Promise<{ notesId: string }>
+        // params: Promise<{ notesId: string }>
+        params: { notesId: string }
 }) {
     const { notesId } = await params;
     const documentId = Number(notesId);
-
+    // const documentId = Number(params.notesId);
     console.log("Document id:", documentId);
     const note = await getNoteById(documentId);
 

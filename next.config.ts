@@ -7,6 +7,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: '**.mm.bing.net',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.britannica.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'files.edgestore.dev',
+      }
     ],
   },
 };
