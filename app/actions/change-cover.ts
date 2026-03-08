@@ -27,5 +27,5 @@ export const changeCover = async (
         throw new Error("Note not found");
     }
 
-    return { success: true, result };
+    return { success: true };
 };

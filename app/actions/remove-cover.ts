@@ -17,5 +17,5 @@ export const removeCover = async (noteId: number) => {
 
     if (!result) throw new Error("Failed to remove cover");
 
-    return { success: true, result };
+    return { success: true };
 };
