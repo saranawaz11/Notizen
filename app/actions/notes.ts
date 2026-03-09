@@ -1,5 +1,5 @@
 'use server'
-import { eq } from 'drizzle-orm';
+import { eq, InferSelectModel } from 'drizzle-orm';
 import { auth } from '@clerk/nextjs/server';
 import db from '../db';
 import { notesTable } from '../db/schema';
@@ -61,4 +61,25 @@ export async function removeNote(id: number) {
 
     await db.delete(notesTable)
         .where(eq(notesTable.id, id));
+}
+
+export async function updateNote({
+    id,
+    ...data
+}: { id: number } & Partial<InferSelectModel<typeof notesTable>>) {
+
+    const { userId } = await auth();
+    if (!userId) throw new Error("Not Authenticated");
+
+    const [note] = await db
+        .update(notesTable)
+        .set(data)
+        .where(
+            and(
+                eq(notesTable.id, id),
+                eq(notesTable.userId, userId)
+            )
+        )
+        .returning();
+    return note;
 }
