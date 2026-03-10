@@ -8,9 +8,10 @@ import { Button } from '@/components/ui/button'
 import { useEdgeStore } from '@/lib/edgestore'
 import { InferSelectModel } from 'drizzle-orm'
 import { ImageIcon, Smile, X } from 'lucide-react'
-import { useParams, useRouter } from 'next/navigation'
-import { useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { ComponentRef, useRef, useState } from 'react'
 import { toast } from 'sonner'
+import TextareaAutosize from 'react-textarea-autosize'
 
 type Note = InferSelectModel<typeof notesTable>
 
@@ -23,15 +24,20 @@ type Props = {
 export default function Toolbar({ initialData, preview, onCoverChange }: Props) {
 
     const [icon, setIcon] = useState<string | null>(initialData.icon);
+    const [isEditing, setIsEditing] = useState(false);
+    const [value, setValue] = useState(initialData.title);
+    const [coverImageUrl, setCoverImageUrl] = useState<string | null>(initialData.coverImage);
 
+    const inputRef = useRef<ComponentRef<'textarea'>>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const { edgestore } = useEdgeStore()
+    const router = useRouter()
+
+    // --- Icon handlers ---
     const onIconSelect = async (newIcon: string) => {
         setIcon(newIcon);
-
         try {
-            await updateNote({
-                id: initialData.id,
-                icon: newIcon
-            });
+            await updateNote({ id: initialData.id, icon: newIcon });
         } catch (error) {
             console.error(error);
         }
@@ -40,63 +46,13 @@ export default function Toolbar({ initialData, preview, onCoverChange }: Props) 
     const onRemoveIcon = async () => {
         setIcon(null);
         try {
-            await updateNote({
-                id: initialData.id,
-                icon: null
-            })
+            await updateNote({ id: initialData.id, icon: null })
         } catch (error) {
             console.error(error)
         }
     }
 
-    const { edgestore } = useEdgeStore()
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const router = useRouter()
-
-    const [coverImageUrl, setCoverImageUrl] = useState<string | null>(initialData.coverImage);
-    const params = useParams()
-
-    // const onUpload = async (file: File) => {
-    //     try {
-    //         const res = await edgestore.publicFiles.upload({
-    //             file,
-    //             options: {
-    //                 replaceTargetUrl: coverImageUrl ?? undefined,
-    //             },
-    //         });
-    //         setCoverImageUrl(res.url);
-    //         await changeCover(Number(initialData.id), res.url);
-    //         router.refresh();
-    //     } catch (error) {
-    //         console.error("Upload failed", error);
-    //         toast.error("Failed to upload cover");
-    //     }
-    // };
-
-    // const onUpload = async (file: File) => {
-    //     try {
-    //         const res = await edgestore.publicFiles.upload({
-    //             file,
-    //             options: {
-    //                 replaceTargetUrl: coverImageUrl ?? undefined,
-    //             },
-    //         });
-
-    //         // setCoverImageUrl(res.url);
-    //         // await changeCover(Number(initialData.id), res.url);
-
-    //         setCoverImageUrl(res.url);
-    //         onCoverChange?.(res.url);  // ← add this line
-    //         await changeCover(Number(initialData.id), res.url);
-    //         router.refresh();
-    //         // Let React render the new state before refreshing server data
-    //         // setTimeout(() => router.refresh(), 500);
-    //     } catch (error) {
-    //         console.error("Upload failed", error);
-    //         toast.error("Failed to upload cover");
-    //     }
-    // };
-
+    // --- Cover handlers ---
     const onUpload = async (file: File) => {
         try {
             const res = await edgestore.publicFiles.upload({
@@ -104,7 +60,7 @@ export default function Toolbar({ initialData, preview, onCoverChange }: Props) 
                 options: { replaceTargetUrl: coverImageUrl ?? undefined },
             });
             setCoverImageUrl(res.url);
-            onCoverChange?.(res.url);  // ← add this line
+            onCoverChange?.(res.url);
             await changeCover(Number(initialData.id), res.url);
             router.refresh();
         } catch (error) {
@@ -120,9 +76,37 @@ export default function Toolbar({ initialData, preview, onCoverChange }: Props) 
         e.target.value = "";
     };
 
+    // --- Title handlers ---
+    const enableInput = () => {
+        if (preview) return;
+        setIsEditing(true);
+        setTimeout(() => {
+            setValue(initialData.title)
+            inputRef.current?.focus();
+        }, 0)
+    }
+
+    const disableInput = () => setIsEditing(false);
+
+    const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            disableInput();
+        }
+    }
+
+    const onInput = (val: string) => {
+        setValue(val)
+        updateNote({
+            id: initialData.id,
+            title: val || 'Untitled'
+        })
+    }
 
     return (
         <div className="pl-[24px] group relative">
+
+            {/* Icon — edit mode */}
             {!!icon && !preview && (
                 <div className="flex items-center gap-x-2 group/icon pt-6">
                     <IconPicker onChange={onIconSelect}>
@@ -130,46 +114,77 @@ export default function Toolbar({ initialData, preview, onCoverChange }: Props) 
                             {icon}
                         </p>
                     </IconPicker>
-                    <Button onClick={onRemoveIcon} className="rounded-full opacity-0 group-hover/icon:opacity-100 transition text-muted-foreground text-xs" variant={'outline'} size={'icon'}>
+                    <Button
+                        onClick={onRemoveIcon}
+                        className="rounded-full opacity-0 group-hover/icon:opacity-100 transition text-muted-foreground text-xs"
+                        variant={'outline'}
+                        size={'icon'}
+                    >
                         <X className="h-4 w-4" />
                     </Button>
                 </div>
             )}
-            {!!initialData.icon && preview && (
-                <p className="text-6xl pt-6">
-                    {initialData.icon}
-                </p>
+
+            {/* Icon — preview mode */}
+            {!!icon && preview && (
+                <p className="text-6xl pt-6">{icon}</p>
             )}
-            <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-1 py-1">
-                {!initialData.icon && !preview && (
-                    <IconPicker asChild onChange={onIconSelect}>
-                        <Button className="text-muted-foreground text-xs" variant={'outline'} size={'sm'}>
-                            <Smile className="h-4 w-4 mr-2" />
-                            Add icon
-                        </Button>
-                    </IconPicker>
-                )}
-                {!coverImageUrl && !preview && (
-                    <>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            className="hidden"
-                        />
-                        <Button
-                            onClick={() => fileInputRef.current?.click()}
-                            className="text-muted-foreground text-xs"
-                            variant={'outline'}
-                            size={'sm'}
-                        >
-                            <ImageIcon className="h-4 w-4 mr-2" />
-                            Add cover
-                        </Button>
-                    </>
+
+            {/* Action buttons — only visible on hover, only in edit mode */}
+            {!preview && (
+                <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-1 py-1">
+                    {!icon && (
+                        <IconPicker asChild onChange={onIconSelect}>
+                            <Button className="text-muted-foreground text-xs" variant={'outline'} size={'sm'}>
+                                <Smile className="h-4 w-4 mr-2" />
+                                Add icon
+                            </Button>
+                        </IconPicker>
+                    )}
+                    {!coverImageUrl && (
+                        <>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
+                            <Button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="text-muted-foreground text-xs"
+                                variant={'outline'}
+                                size={'sm'}
+                            >
+                                <ImageIcon className="h-4 w-4 mr-2" />
+                                Add cover
+                            </Button>
+                        </>
+                    )}
+                </div>
+            )}
+
+            {/* Title — always visible, below the action buttons */}
+            <div className="pt-2">
+                {isEditing && !preview ? (
+                    <TextareaAutosize
+                        ref={inputRef}
+                        onBlur={disableInput}
+                        onKeyDown={onKeyDown}
+                        value={value}
+                        onChange={(e) => onInput(e.target.value)}
+                        className="w-full text-5xl bg-transparent font-bold wrap-break-word  outline-none text-[#3F3F3F] dark:text-[#CFCFCF] resize-none"
+                    />
+                ) : (
+                    <div
+                        onClick={enableInput}
+                        className="pb-[11.5px] text-5xl font-bold wrap-break-word text-[#3F3F3F] dark:text-[#CFCFCF] cursor-pointer"
+                    >
+                        {value}
+                    </div>
                 )}
             </div>
+
         </div>
     )
 }
