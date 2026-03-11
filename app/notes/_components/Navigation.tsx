@@ -12,11 +12,12 @@ import DocumentList from './DocumentList';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import TrashBox from './TrashBox';
 import Navbar from './Navbar';
+import NavbarWrapper from './NavbarWrapper';
 
 export default function Navigation() {
     const sidebarRef = useRef<ComponentRef<'aside'>>(null);
     const [isResetting, setIsResetting] = useState(false);
-    const isMobile = useMediaQuery('(max-width:767px)') 
+    const isMobile = useMediaQuery('(max-width:767px)')
     const navbarRef = useRef<ComponentRef<'div'>>(null);
     const isResizingRef = useRef(false);
     const [isCollapsed, setIsCollapsed] = useState(isMobile);
@@ -150,7 +151,11 @@ export default function Navigation() {
                     isMobile && 'left-0 w-full'
                 )}>
                 {!!params.notesId ? (
-                    <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+                    <NavbarWrapper
+                        notesId={params.notesId as string}
+                        isCollapsed={isCollapsed}
+                        onResetWidth={resetWidth}
+                    />
                 ) : (
                     <nav onClick={resetWidth} className="bg-transparent px-3 py-2 w-full">
                         {isCollapsed && <MenuIcon className="h-6 w-6 text-muted-foreground" role="button" />}
