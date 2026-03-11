@@ -1,9 +1,9 @@
 'use client'
-import useIsMobile from '@/hooks/use-is-mobile';
 import { cn } from '@/lib/utils';
-import { ChevronsLeft, PlusCircle, Search, Plus, Trash } from 'lucide-react';
+import { ChevronsLeft, PlusCircle, Search, Plus, Trash, MenuIcon } from 'lucide-react';
 import React, { ComponentRef, startTransition, useCallback, useEffect, useRef, useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useMediaQuery } from "usehooks-ts";
 import UserItem from './UserItem';
 import Item from './Item';
 import { createNote } from '@/app/actions/notes';
@@ -11,15 +11,17 @@ import { toast } from 'sonner';
 import DocumentList from './DocumentList';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import TrashBox from './TrashBox';
+import Navbar from './Navbar';
 
 export default function Navigation() {
     const sidebarRef = useRef<ComponentRef<'aside'>>(null);
     const [isResetting, setIsResetting] = useState(false);
-    const { isMobile } = useIsMobile();
+    const isMobile = useMediaQuery('(max-width:767px)') 
     const navbarRef = useRef<ComponentRef<'div'>>(null);
     const isResizingRef = useRef(false);
     const [isCollapsed, setIsCollapsed] = useState(isMobile);
     const pathname = usePathname();
+    const params = useParams();
 
     const handleMouseMove = (event: MouseEvent) => {
         if (!isResizingRef.current) return;
@@ -142,6 +144,20 @@ export default function Navigation() {
                     className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0" />
             </aside>
 
+            <div ref={navbarRef}
+                className={cn('absolute top-0 z-99999 left-60 w-[calc(100%-240px)]',
+                    isResetting && 'transition ease-in-out duration-300',
+                    isMobile && 'left-0 w-full'
+                )}>
+                {!!params.notesId ? (
+                    <Navbar isCollapsed={isCollapsed} onResetWidth={resetWidth} />
+                ) : (
+                    <nav onClick={resetWidth} className="bg-transparent px-3 py-2 w-full">
+                        {isCollapsed && <MenuIcon className="h-6 w-6 text-muted-foreground" role="button" />}
+                    </nav>
+                )}
+
+            </div>
         </div>
     );
 }
