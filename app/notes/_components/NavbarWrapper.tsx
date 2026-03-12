@@ -1,6 +1,12 @@
-// _components/NavbarWrapper.tsx
-import { getNoteById } from '@/lib/queries/GetNotesById'
-import Navbar from './Navbar'
+'use client'
+
+import { useEffect, useState } from "react"
+import { getNoteById } from "@/app/actions/getNoteById"
+import Navbar from "./Navbar"
+import { InferSelectModel } from "drizzle-orm"
+import { notesTable } from "@/app/db/schema"
+
+type Note = InferSelectModel<typeof notesTable>
 
 type Props = {
     notesId: string
@@ -8,13 +14,28 @@ type Props = {
     onResetWidth: () => void
 }
 
-export default async function NavbarWrapper({ notesId, isCollapsed, onResetWidth }: Props) {
-    const note = await getNoteById(parseInt(notesId))
+export default function NavbarWrapper({
+    notesId,
+    isCollapsed,
+    onResetWidth
+}: Props) {
+
+    const [note, setNote] = useState<Note | null>(null)
+
+    useEffect(() => {
+        async function fetchNote() {
+            const data = await getNoteById(Number(notesId))
+            setNote(data)
+        }
+
+        fetchNote()
+    }, [notesId])
+
     return (
         <Navbar
-            note={note ?? null}
-            isCollapsed={isCollapsed}
-            onResetWidth={onResetWidth}
-        />
-    )
+          note={note}
+          isCollapsed={isCollapsed}
+          onResetWidth={onResetWidth}
+      />
+  )
 }

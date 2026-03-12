@@ -4,14 +4,14 @@ import { auth } from '@clerk/nextjs/server';
 import db from '../db';
 import { notesTable } from '../db/schema';
 
-export async function archiveNote(id: number) {
-    const { userId } = await auth();
-    if (!userId) throw new Error('Not Authenticated');
+// export async function archiveNote(id: number) {
+//     const { userId } = await auth();
+//     if (!userId) throw new Error('Not Authenticated');
 
-    await db.update(notesTable)
-        .set({ isArchived: true })
-        .where(eq(notesTable.id, id));
-}
+//     await db.update(notesTable)
+//         .set({ isArchived: true })
+//         .where(eq(notesTable.id, id));
+// }
 
 export async function createNote(title: string, parentDocument?: number) {
     const { userId } = await auth();
@@ -46,22 +46,22 @@ export async function getTrash() {
 
     return notes;
 }
-export async function restoreNote(id: number) {
-    const { userId } = await auth();
-    if (!userId) throw new Error('Not Authenticated');
+// export async function restoreNote(id: number) {
+//     const { userId } = await auth();
+//     if (!userId) throw new Error('Not Authenticated');
 
-    await db.update(notesTable)
-        .set({ isArchived: false })
-        .where(eq(notesTable.id, id));
-}
+//     await db.update(notesTable)
+//         .set({ isArchived: false })
+//         .where(eq(notesTable.id, id));
+// }
 
-export async function removeNote(id: number) {
-    const { userId } = await auth();
-    if (!userId) throw new Error('Not Authenticated');
+// export async function removeNote(id: number) {
+//     const { userId } = await auth();
+//     if (!userId) throw new Error('Not Authenticated');
 
-    await db.delete(notesTable)
-        .where(eq(notesTable.id, id));
-}
+//     await db.delete(notesTable)
+//         .where(eq(notesTable.id, id));
+// }
 
 export async function updateNote({
     id,
@@ -81,5 +81,159 @@ export async function updateNote({
             )
         )
         .returning();
+    return note;
+}
+
+export async function archiveNote(id: number) {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Not Authenticated");
+
+    const existingNote = await db
+        .select()
+        .from(notesTable)
+        .where(
+            and(
+                eq(notesTable.id, id),
+                eq(notesTable.userId, userId)
+            )
+        )
+        .limit(1);
+
+    if (!existingNote[0]) throw new Error("Not found");
+
+    const recursiveArchive = async (noteId: number) => {
+        const children = await db
+            .select()
+            .from(notesTable)
+            .where(
+                and(
+                    eq(notesTable.userId, userId),
+                    eq(notesTable.parentDocument, noteId)
+                )
+            );
+
+        for (const child of children) {
+            await db
+                .update(notesTable)
+                .set({ isArchived: true })
+                .where(eq(notesTable.id, child.id));
+
+            await recursiveArchive(child.id);
+        }
+    };
+
+    const [note] = await db
+        .update(notesTable)
+        .set({ isArchived: true })
+        .where(
+            and(
+                eq(notesTable.id, id),
+                eq(notesTable.userId, userId)
+            )
+        )
+        .returning();
+
+    await recursiveArchive(id);
+    return note;
+}
+
+
+export async function restoreNote(id: number) {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Not Authenticated");
+
+    const [existingNote] = await db
+        .select()
+        .from(notesTable)
+        .where(
+            and(
+                eq(notesTable.id, id),
+                eq(notesTable.userId, userId)
+            )
+        )
+        .limit(1);
+
+    if (!existingNote) throw new Error("Not found");
+    if (existingNote.userId !== userId) throw new Error("Unauthorized");
+
+    const recursiveRestore = async (noteId: number) => {
+        const children = await db
+            .select()
+            .from(notesTable)
+            .where(
+                and(
+                    eq(notesTable.userId, userId),
+                    eq(notesTable.parentDocument, noteId)
+                )
+            );
+
+        for (const child of children) {
+            await db
+                .update(notesTable)
+                .set({ isArchived: false })
+                .where(eq(notesTable.id, child.id));
+
+            await recursiveRestore(child.id);
+        }
+    };
+
+    const options: Partial<InferSelectModel<typeof notesTable>> = {
+        isArchived: false
+    };
+
+    if (existingNote.parentDocument) {
+        const [parent] = await db
+            .select()
+            .from(notesTable)
+            .where(eq(notesTable.id, existingNote.parentDocument))
+            .limit(1);
+
+        if (parent?.isArchived) {
+            options.parentDocument = null;
+        }
+    }
+
+    const [note] = await db
+        .update(notesTable)
+        .set(options)
+        .where(
+            and(
+                eq(notesTable.id, id),
+                eq(notesTable.userId, userId)
+            )
+        )
+        .returning();
+
+    await recursiveRestore(id);
+    return note;
+}
+
+export async function removeNote(id: number) {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Not Authenticated");
+
+    const [existingNote] = await db
+        .select()
+        .from(notesTable)
+        .where(
+            and(
+                eq(notesTable.id, id),
+                eq(notesTable.userId, userId)
+            )
+        )
+        .limit(1);
+
+    if (!existingNote) throw new Error("Not found");
+
+    const [note] = await db
+        .delete(notesTable)
+        .where(
+            and(
+                eq(notesTable.id, id),
+                eq(notesTable.userId, userId)
+            )
+        )
+        .returning();
+
     return note;
 }

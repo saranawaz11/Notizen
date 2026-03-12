@@ -4,6 +4,10 @@ import { InferSelectModel } from 'drizzle-orm';
 import { MenuIcon } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React from 'react'
+import Title from './Title';
+import Publish from './Publish';
+import Menu from './Menu';
+import Banner from './Banner';
 
 type Note = InferSelectModel<typeof notesTable>
 
@@ -26,7 +30,17 @@ export default function Navbar(
                         onClick={onResetWidth}
                         className="h-6 w-6 text-muted-foreground" />
                 )}
+                <div className="flex items-center justify-between w-full">
+                    <Title initialData={note} key={note.id} />
+                    <div className="flex items-center gap-x-2">
+                        <Publish key={note.id} initialData={note} />
+                        <Menu notesId={note.id} />
+                    </div>
+                </div>
             </nav>
+            {note.isArchived && (
+                <Banner notesId={note.id} />
+            )}
 
 
         </>

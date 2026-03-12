@@ -33,7 +33,6 @@ export default function Toolbar({ initialData, preview, onCoverChange }: Props) 
     const { edgestore } = useEdgeStore()
     const router = useRouter()
 
-    // --- Icon handlers ---
     const onIconSelect = async (newIcon: string) => {
         setIcon(newIcon);
         try {
@@ -52,7 +51,6 @@ export default function Toolbar({ initialData, preview, onCoverChange }: Props) 
         }
     }
 
-    // --- Cover handlers ---
     const onUpload = async (file: File) => {
         try {
             const res = await edgestore.publicFiles.upload({
@@ -76,7 +74,6 @@ export default function Toolbar({ initialData, preview, onCoverChange }: Props) 
         e.target.value = "";
     };
 
-    // --- Title handlers ---
     const enableInput = () => {
         if (preview) return;
         setIsEditing(true);
@@ -106,7 +103,6 @@ export default function Toolbar({ initialData, preview, onCoverChange }: Props) 
     return (
         <div className="pl-[24px] group relative">
 
-            {/* Icon — edit mode */}
             {!!icon && !preview && (
                 <div className="flex items-center gap-x-2 group/icon pt-6">
                     <IconPicker onChange={onIconSelect}>
@@ -125,12 +121,10 @@ export default function Toolbar({ initialData, preview, onCoverChange }: Props) 
                 </div>
             )}
 
-            {/* Icon — preview mode */}
             {!!icon && preview && (
                 <p className="text-6xl pt-6">{icon}</p>
             )}
 
-            {/* Action buttons — only visible on hover, only in edit mode */}
             {!preview && (
                 <div className="opacity-0 group-hover:opacity-100 flex items-center gap-x-1 py-1">
                     {!icon && (
