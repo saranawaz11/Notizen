@@ -33,9 +33,9 @@ export default function NavbarWrapper({
 
     return (
         <Navbar
-          note={note}
-          isCollapsed={isCollapsed}
-          onResetWidth={onResetWidth}
-      />
+            note={note}
+            isCollapsed={isCollapsed}
+            onResetWidth={onResetWidth}
+        />
   )
 }

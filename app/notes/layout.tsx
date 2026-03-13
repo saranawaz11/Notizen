@@ -1,17 +1,21 @@
 import React from 'react'
 import Navigation from './_components/Navigation'
+// import ErrorBoundary from '../components/ErrorBoundary'
 // import NotesHeader from './_components/Header'
 
+
 export default function layout(
-    { children }: {
-        children: React.ReactNode
-    }
+  { children }: {
+    children: React.ReactNode
+  }
 ) {
   return (
     <div className='h-full flex dark:bg-[#1F1F1F]'>
+      {/* <ErrorBoundary> */}
       <Navigation />
+      {/* </ErrorBoundary> */}
       <main className="flex-1 h-full overflow-y-auto">
-        {children}  
+        {children}
       </main>
     </div>
   )

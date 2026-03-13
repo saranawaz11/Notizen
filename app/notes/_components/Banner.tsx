@@ -42,9 +42,11 @@ export default function Banner(
             </Button>
 
             <ConfirmModal onConfirm={onRemove}>
-                <Button size={'sm'} variant={'outline'} className="border-white bg-transparent hover:bg-primary/5 text-white hover:text-white p-1 px-2 h-auto font-normal">
-                    Delete forever
-                </Button>
+                <div>
+                    <Button size={'sm'} variant={'outline'} className="border-white bg-transparent hover:bg-primary/5 text-white hover:text-white p-1 px-2 h-auto font-normal">
+                        Delete forever
+                    </Button>
+                </div>
             </ConfirmModal>
         </div>
     )

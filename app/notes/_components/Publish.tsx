@@ -48,7 +48,7 @@ export default function Publish(
             error: 'Failed to unpublish note.'
         })
     }
-    
+
     const onPublish = () => {
         setIsSubmitting(true)
         const promise = updateNote({
@@ -67,10 +67,12 @@ export default function Publish(
         <Popover>
             <PopoverTrigger asChild>
                 <Button size={'sm'} variant={'ghost'}>
-                    Publish
-                    {isPublished && (
-                        <Globe className="text-sky-500 w-4 h-4 ml-2" />
-                    )}
+                    <span className="flex items-center">
+                        Publish
+                        {isPublished && (
+                            <Globe className="text-sky-500 w-4 h-4 ml-2" />
+                        )}
+                    </span>
                 </Button>
             </PopoverTrigger>
             <PopoverContent className="w-72" align="end"

@@ -19,20 +19,20 @@ export const ConfirmModal = ({
 
     return (
         <AlertDialog>
-            <AlertDialogTrigger onClick={(e: React.MouseEvent<HTMLElement, MouseEvent>) => e.stopPropagation()} asChild>                {children}
+            <AlertDialogTrigger asChild>
+                {children}
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>
-                        Are you absolutley sure?
+                        Are you absolutely sure?
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                         This action cannot be undone.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
-
                 <AlertDialogFooter>
-                    <AlertDialogCancel onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => e.stopPropagation()}>
+                    <AlertDialogCancel>
                         Cancel
                     </AlertDialogCancel>
                     <AlertDialogAction onClick={handleConfirm}>

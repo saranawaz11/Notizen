@@ -137,7 +137,7 @@ export default function Navigation() {
                             <Item icon={Trash} label="Trash" />
                         </PopoverTrigger>
                         <PopoverContent className="p-0 w-72" side={isMobile ? 'bottom' : 'right'}>
-                            <TrashBox />
+                            {/* <TrashBox /> */}
                         </PopoverContent>
                     </Popover>
                 </div>
