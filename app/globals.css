@@ -241,3 +241,7 @@
     @apply bg-background text-foreground;
   }
 }
+.bn-editor {
+  outline: none !important;
+  border: none !important;
+}

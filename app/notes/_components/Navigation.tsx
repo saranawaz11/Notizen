@@ -110,6 +110,9 @@ export default function Navigation() {
         })
     }
 
+    const [trashOpen, setTrashOpen] = useState(false)
+
+
     return (
         <div>
             <aside ref={sidebarRef} className={cn("group/sidebar h-full bg-secondary w-60 z-99999 overflow-y-auto relative flex flex-col", isResetting && 'transition ease-in-out duration-300',
@@ -129,8 +132,8 @@ export default function Navigation() {
                     <Item onClick={handleCreate}
                         icon={Plus}
                         label="Add a page" />
-                    <Popover>
-                        <PopoverTrigger className="w-full mt-4">
+                    <Popover open={trashOpen} onOpenChange={setTrashOpen}>
+                        <PopoverTrigger className="w-full mt-4" onClick={() => setTrashOpen(true)}>
                             <Item icon={Trash} label="Trash" />
                         </PopoverTrigger>
                         <PopoverContent className="p-0 w-72" side={isMobile ? 'bottom' : 'right'}>

@@ -28,17 +28,17 @@ const TrashBox = () => {
         document.title.toLowerCase().includes(search.toLowerCase())
     );
 
-    const onClick = (documentId: number) => {
-        router.push(`/documents/${documentId}`);
+    const onClick = (notesId: number) => {
+        router.push(`/notes/${notesId}`);
     };
 
     const onRestore = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-        documentId: number,
+        notesId: number,
     ) => {
         event.stopPropagation();
-        const promise = restoreNote(documentId).then(() => {
-            setDocuments(prev => prev?.filter(d => d.id !== documentId));
+        const promise = restoreNote(notesId).then(() => {
+            setDocuments(prev => prev?.filter(d => d.id !== notesId));
         });
 
         toast.promise(promise, {
@@ -48,9 +48,9 @@ const TrashBox = () => {
         });
     };
 
-    const onRemove = (documentId: number) => {
-        const promise = removeNote(documentId).then(() => {
-            setDocuments(prev => prev?.filter(d => d.id !== documentId));
+    const onRemove = (notesId: number) => {
+        const promise = removeNote(notesId).then(() => {
+            setDocuments(prev => prev?.filter(d => d.id !== notesId));
         });
 
         toast.promise(promise, {
@@ -59,8 +59,8 @@ const TrashBox = () => {
             error: 'Failed to delete note.'
         });
 
-        if (params.documentId === String(documentId)) {
-            router.push('/documents');
+        if (params.notesId === String(notesId)) {
+            router.push('/notes');
         }
     };
 
