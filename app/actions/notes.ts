@@ -1,5 +1,5 @@
 'use server'
-import { eq, InferSelectModel } from 'drizzle-orm';
+import { desc, eq, InferSelectModel } from 'drizzle-orm';
 import { auth } from '@clerk/nextjs/server';
 import db from '../db';
 import { notesTable } from '../db/schema';
@@ -236,4 +236,22 @@ export async function removeNote(id: number) {
         .returning();
 
     return note;
+}
+
+export async function getSearch() {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Not Authenticated");
+
+    const notes = await db
+        .select()
+        .from(notesTable)
+        .where(
+            and(
+                eq(notesTable.userId, userId),
+                eq(notesTable.isArchived, false)
+            )
+        )
+        .orderBy(desc(notesTable.id));
+
+    return notes;
 }

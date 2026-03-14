@@ -6,6 +6,7 @@ import React from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { ConfirmModal } from '@/app/components/modals/ConfirmModal'
+import { useRefresh } from '@/hooks/use-refresh'
 
 type NotesId = InferSelectModel<typeof notesTable>['id']
 type Props = {
@@ -15,9 +16,10 @@ type Props = {
 export default function Banner(
     { notesId }: Props
 ) {
-    const router = useRouter()
+    const router = useRouter();
+    const refresh = useRefresh((store) => store.refresh)
     const onRemove = () => {
-        const promise = removeNote(notesId)
+        const promise = removeNote(notesId).then(() => refresh())
         toast.promise(promise, {
             loading: 'Deleting note...',
             success: 'Note deleted!',

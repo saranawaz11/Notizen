@@ -1,20 +1,23 @@
-import React from 'react'
+'use client'
+import React, { useState } from 'react'
 import Navigation from './_components/Navigation'
+import SearchCommand from '../components/SearchCommand'
 // import ErrorBoundary from '../components/ErrorBoundary'
 // import NotesHeader from './_components/Header'
 
 
-export default function layout(
+export default function Layout(
   { children }: {
     children: React.ReactNode
   }
 ) {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   return (
     <div className='h-full flex dark:bg-[#1F1F1F]'>
-      {/* <ErrorBoundary> */}
-      <Navigation />
-      {/* </ErrorBoundary> */}
+      <Navigation onSearchOpen={() => setIsSearchOpen(true)} />
       <main className="flex-1 h-full overflow-y-auto">
+        <SearchCommand isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} onOpen={() => setIsSearchOpen(true)} />
         {children}
       </main>
     </div>

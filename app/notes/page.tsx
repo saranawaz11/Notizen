@@ -8,16 +8,19 @@ import Image from 'next/image'
 import { PlusCircle } from 'lucide-react'
 import { useTransition } from 'react'
 import { createNote } from '../actions/notes'
+import { useRefresh } from '@/hooks/use-refresh'
 
 const NotesPage = () => {
     const router = useRouter()
     const { user } = useUser();
     const [isPending, startTransition] = useTransition()
+    const { refresh } = useRefresh()
 
     const onCreate = () => {
         startTransition(() => {
             const promise = createNote('Untitled')
                 .then((notesId) => {
+                    refresh()
                     router.push(`/notes/${notesId}`)
                 })
 

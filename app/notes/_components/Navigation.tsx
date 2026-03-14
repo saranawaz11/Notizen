@@ -14,7 +14,14 @@ import TrashBox from './TrashBox';
 import Navbar from './Navbar';
 import NavbarWrapper from './NavbarWrapper';
 
-export default function Navigation() {
+type Props = {
+    onSearchOpen: () => void
+}
+
+
+export default function Navigation(
+    { onSearchOpen }: Props
+) {
     const sidebarRef = useRef<ComponentRef<'aside'>>(null);
     const [isResetting, setIsResetting] = useState(false);
     const isMobile = useMediaQuery('(max-width:767px)')
@@ -114,8 +121,8 @@ export default function Navigation() {
 
 
     return (
-        <div>
-            <aside ref={sidebarRef} className={cn("group/sidebar h-full bg-secondary w-60 z-99999 overflow-y-auto relative flex flex-col", isResetting && 'transition ease-in-out duration-300',
+        <div className='h-full'>
+            <aside ref={sidebarRef} className={cn("group/sidebar h-screen bg-secondary w-60 z-[99999] overflow-y-auto relative flex flex-col", isResetting && 'transition ease-in-out duration-300',
                 isMobile && 'w-0'
             )}>
                 <div onClick={collapse} className={cn("h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100", isMobile && 'opacity-100')} role="button">
@@ -124,7 +131,7 @@ export default function Navigation() {
 
                 <div>
                     <UserItem />
-                    <Item icon={Search} label='Search' isSearch />
+                    <Item onClick={onSearchOpen} icon={Search} label='Search' isSearch />
                     <Item onClick={handleCreate} label='New Page' icon={PlusCircle} />
                 </div>
                 <div className="mt-4">
@@ -137,7 +144,7 @@ export default function Navigation() {
                             <Item icon={Trash} label="Trash" />
                         </PopoverTrigger>
                         <PopoverContent className="p-0 w-72" side={isMobile ? 'bottom' : 'right'}>
-                            {/* <TrashBox /> */}
+                            <TrashBox />
                         </PopoverContent>
                     </Popover>
                 </div>
