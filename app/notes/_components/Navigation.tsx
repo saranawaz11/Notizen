@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import TrashBox from './TrashBox';
 import Navbar from './Navbar';
 import NavbarWrapper from './NavbarWrapper';
+import { useRefresh } from '@/hooks/use-refresh';
 
 type Props = {
     onSearchOpen: () => void
@@ -101,11 +102,13 @@ export default function Navigation(
     };
 
     const router = useRouter()
+    const { refresh } = useRefresh()
 
     const handleCreate = () => {
         startTransition(() => {
             const promise = createNote('Untitled')
                 .then((notesId) => {
+                    refresh();
                     router.push(`/notes/${notesId}`)
                 })
 
@@ -122,7 +125,7 @@ export default function Navigation(
 
     return (
         <div className='h-full'>
-            <aside ref={sidebarRef} className={cn("group/sidebar h-screen bg-secondary w-60 z-[99999] overflow-y-auto relative flex flex-col", isResetting && 'transition ease-in-out duration-300',
+            <aside ref={sidebarRef} className={cn("group/sidebar h-screen bg-secondary w-60 z-100 overflow-y-auto relative flex flex-col", isResetting && 'transition ease-in-out duration-300',
                 isMobile && 'w-0'
             )}>
                 <div onClick={collapse} className={cn("h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100", isMobile && 'opacity-100')} role="button">

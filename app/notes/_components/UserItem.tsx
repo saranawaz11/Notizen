@@ -11,7 +11,7 @@ const UserItem = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <div role="button" className="flex items-center text-sm p-3 w-full hover:bg-primary/5">
+                <div role="button" className="flex items-center text-sm p-3 w-full hover:bg-primary/5 z-99999">
                     <div className="gap-x-2 flex items-center max-w-[150px]">
                         <Avatar className="h-8 w-8">
                             <AvatarImage src={user?.imageUrl} />
@@ -23,8 +23,8 @@ const UserItem = () => {
                     <ChevronsLeftRight className="rotate-90 ml-2 text-muted-foreground h-4 w-4" />
                 </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-80" align="start" alignOffset={11} forceMount>
-                <div className="flex flex-col space-y-4 p-2">
+            <DropdownMenuContent className="w-80 z-99999" align="start" alignOffset={11} forceMount>
+                <div className="flex flex-col space-y-4 p-2 z-99999">
                     <p className="text-xs font-medium leading-none text-muted-foreground">{user?.emailAddresses[0].emailAddress}</p>
                     <div className="flex items-center gap-x-2">
                         <div className=" rounded-md bg-secondary p-1">

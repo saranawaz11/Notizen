@@ -2,6 +2,7 @@ import { updateNote } from '@/app/actions/notes'
 import { notesTable } from '@/app/db/schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useRefresh } from '@/hooks/use-refresh'
 import { InferSelectModel } from 'drizzle-orm'
 import React, { startTransition, useRef, useState } from 'react'
 type Note = InferSelectModel<typeof notesTable>
@@ -26,6 +27,7 @@ export default function Title(
     }, 0)
   }
 
+  const { refresh } = useRefresh()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = event.target.value;
     setTitle(newTitle);
@@ -39,7 +41,8 @@ export default function Title(
         await updateNote({
           id: initialData.id,
           title: newTitle || 'Untitled'
-        });
+        })
+        refresh()
       } catch (error) {
         console.error('Failed to update note:', error);
       }

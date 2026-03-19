@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import Item from "./Item";
 import { FileIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRefresh } from "@/hooks/use-refresh";
 
 export type NoteSelectSchemaType = InferSelectModel<typeof notesTable>
 
@@ -19,6 +20,7 @@ interface DocumentListProps {
 const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
     const params = useParams()
     const router = useRouter()
+    const { count } = useRefresh()
     const [notes, setNotes] = useState<NoteSelectSchemaType[] | undefined>(undefined)
     const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
@@ -34,7 +36,7 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
             setNotes(data)
         }
         fetchNotes()
-    }, [parentDocumentId])
+    }, [parentDocumentId, count])
 
     const onExpand = (documentId: string) => {
         setExpanded(prevExpanded => ({

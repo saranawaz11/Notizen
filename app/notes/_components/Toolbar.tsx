@@ -9,19 +9,23 @@ import { useEdgeStore } from '@/lib/edgestore'
 import { InferSelectModel } from 'drizzle-orm'
 import { ImageIcon, Smile, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { ComponentRef, useRef, useState } from 'react'
+import { ComponentRef, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import TextareaAutosize from 'react-textarea-autosize'
+import { useRefresh } from '@/hooks/use-refresh'
 
 type Note = InferSelectModel<typeof notesTable>
 
 type Props = {
     initialData: Note,
     preview?: boolean,
-    onCoverChange?: (url: string) => void
+    onCoverChange?: (url: string) => void,
+    onTitleChange?: (title: string) => void
 }
 
-export default function Toolbar({ initialData, preview, onCoverChange }: Props) {
+export default function Toolbar(
+    { initialData, preview, onCoverChange, onTitleChange }: Props
+) {
 
     const [icon, setIcon] = useState<string | null>(initialData.icon);
     const [isEditing, setIsEditing] = useState(false);
@@ -32,6 +36,7 @@ export default function Toolbar({ initialData, preview, onCoverChange }: Props) 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { edgestore } = useEdgeStore()
     const router = useRouter()
+
 
     const onIconSelect = async (newIcon: string) => {
         setIcon(newIcon);
@@ -91,13 +96,14 @@ export default function Toolbar({ initialData, preview, onCoverChange }: Props) 
             disableInput();
         }
     }
-
+    const { refresh } = useRefresh()
     const onInput = (val: string) => {
         setValue(val)
+        onTitleChange?.(val)
         updateNote({
             id: initialData.id,
             title: val || 'Untitled'
-        })
+        }).then(() => refresh())
     }
 
     return (

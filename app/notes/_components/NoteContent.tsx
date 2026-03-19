@@ -19,6 +19,7 @@ export default function NoteContent(
     const [coverUrl, setCoverUrl] = useState<string | undefined>(
         note.coverImage || undefined
     );
+    const [title, setTitle] = useState(note.title)
 
     const Editor = useMemo(() => dynamic(() => import('@/app/components/Editor'), {
         ssr: false
@@ -37,6 +38,11 @@ export default function NoteContent(
             <Cover url={coverUrl} />
             <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
                 <Toolbar initialData={note} onCoverChange={setCoverUrl} />
+                <Toolbar
+                    initialData={{ ...note, title }}
+                    onCoverChange={setCoverUrl}
+                    onTitleChange={setTitle}
+                />
                 <Editor
                     onChange={onChange}
                     initialContent={note.content ?? ''}

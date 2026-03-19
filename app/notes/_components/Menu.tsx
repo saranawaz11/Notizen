@@ -3,6 +3,7 @@ import { notesTable } from '@/app/db/schema'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useRefresh } from '@/hooks/use-refresh'
 import { useUser } from '@clerk/nextjs'
 import { InferSelectModel } from 'drizzle-orm'
 import { MoreHorizontal, Trash } from 'lucide-react'
@@ -20,6 +21,7 @@ export default function Menu(
     const { user } = useUser()
     console.log('From menu:- ', notesId);
     const router = useRouter()
+    const { refresh } = useRefresh()
     const onArchive = () => {
         const promise = archiveNote(notesId)
         toast.promise(promise, {
@@ -27,6 +29,7 @@ export default function Menu(
             success: 'Note moved to trash',
             error: 'Failed to archive note'
         })
+        refresh();
         router.push('/notes')
     }
     return (
