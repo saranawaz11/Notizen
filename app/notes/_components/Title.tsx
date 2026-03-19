@@ -2,9 +2,10 @@ import { updateNote } from '@/app/actions/notes'
 import { notesTable } from '@/app/db/schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { useNoteTitle } from '@/hooks/use-note-title'
 import { useRefresh } from '@/hooks/use-refresh'
 import { InferSelectModel } from 'drizzle-orm'
-import React, { startTransition, useRef, useState } from 'react'
+import React, { startTransition, useEffect, useRef, useState } from 'react'
 type Note = InferSelectModel<typeof notesTable>
 
 type Props = {
@@ -17,8 +18,15 @@ export default function Title(
   const [isEditing, setIsEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const [title, setTitle] = useState(initialData.title || 'Untitled')
+  const [localTitle, setLocalTitle] = useState('')
+  const { title: globalTitle, setTitle: setGlobalTitle } = useNoteTitle()
+
+  useEffect(() => {
+    setGlobalTitle(initialData.title || 'Untitled')
+  }, [initialData.id])
 
   const enableInput = () => {
+    setLocalTitle(initialData.title)
     setTitle(initialData.title);
     setIsEditing(true);
     setTimeout(() => {
@@ -30,12 +38,8 @@ export default function Title(
   const { refresh } = useRefresh()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newTitle = event.target.value;
-    setTitle(newTitle);
-
-    // updateNote({
-    //   id: initialData.id,
-    //   title: newTitle || 'Untitled'
-    // })
+    setLocalTitle(newTitle);
+    setGlobalTitle(newTitle)
     startTransition(async () => {
       try {
         await updateNote({
@@ -68,11 +72,11 @@ export default function Title(
     <div className="flex items-center gap-x-1">
       {!!initialData.icon && <p>{initialData.icon}</p>}
       {isEditing ? (
-        <Input ref={inputRef} onClick={enableInput} onBlur={disableInput} onChange={onChange} onKeyDown={onKeyDown} value={title} className="h-7 px-2 focus-visible:ring-transparent" />
+        <Input ref={inputRef} onClick={enableInput} onBlur={disableInput} onChange={onChange} onKeyDown={onKeyDown} value={localTitle} className="h-7 px-2 focus-visible:ring-transparent" />
       ) : (
         <Button onClick={enableInput} variant={'ghost'} size={'sm'} className="font-normal h-auto p-1">
           <span className="truncate">
-            {title || 'Untitled'}
+              {globalTitle || 'Untitled'}
           </span>
         </Button>
       )}

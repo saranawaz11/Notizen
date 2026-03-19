@@ -8,6 +8,7 @@ import Item from "./Item";
 import { FileIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRefresh } from "@/hooks/use-refresh";
+import { useNoteTitle } from "@/hooks/use-note-title";
 
 export type NoteSelectSchemaType = InferSelectModel<typeof notesTable>
 
@@ -23,6 +24,9 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
     const { count } = useRefresh()
     const [notes, setNotes] = useState<NoteSelectSchemaType[] | undefined>(undefined)
     const [expanded, setExpanded] = useState<Record<string, boolean>>({})
+
+    const { title: globalTitle } = useNoteTitle()
+
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -44,6 +48,8 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
             [documentId]: !prevExpanded[documentId]
         }))
     }
+
+
 
     const onRedirect = (documentId: number) => {
         router.push(`/notes/${documentId}`)
@@ -79,7 +85,7 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
                     <Item
                         id={note.id}
                         onClick={() => onRedirect(note.id)}
-                        label={note.title}
+                        label={params.notesId === String(note.id) ? globalTitle || note.title : note.title}
                         icon={FileIcon}
                         documentIcon={note.icon ?? undefined}
                         active={params.documentId === String(note.id)}
@@ -97,3 +103,4 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
 }
 
 export default DocumentList;
+

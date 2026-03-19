@@ -14,6 +14,7 @@ import TrashBox from './TrashBox';
 import Navbar from './Navbar';
 import NavbarWrapper from './NavbarWrapper';
 import { useRefresh } from '@/hooks/use-refresh';
+import { useNoteTitle } from '@/hooks/use-note-title';
 
 type Props = {
     onSearchOpen: () => void
@@ -86,6 +87,7 @@ export default function Navigation(
     useEffect(() => {
         if (isMobile) collapseSidebar();
     }, [pathname, isMobile, collapseSidebar]);
+
 
     const collapse = () => {
         setIsCollapsed(true);

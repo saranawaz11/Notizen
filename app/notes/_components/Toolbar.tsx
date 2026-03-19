@@ -13,6 +13,7 @@ import { ComponentRef, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import TextareaAutosize from 'react-textarea-autosize'
 import { useRefresh } from '@/hooks/use-refresh'
+import { useNoteTitle } from '@/hooks/use-note-title'
 
 type Note = InferSelectModel<typeof notesTable>
 
@@ -36,6 +37,7 @@ export default function Toolbar(
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { edgestore } = useEdgeStore()
     const router = useRouter()
+    const { setTitle: setGlobalTitle } = useNoteTitle()
 
 
     const onIconSelect = async (newIcon: string) => {
@@ -99,6 +101,7 @@ export default function Toolbar(
     const { refresh } = useRefresh()
     const onInput = (val: string) => {
         setValue(val)
+        setGlobalTitle(val)
         onTitleChange?.(val)
         updateNote({
             id: initialData.id,

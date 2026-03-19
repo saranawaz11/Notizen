@@ -37,7 +37,7 @@ export default function NoteContent(
             {/* <h2>Note id is: {JSON.stringify(note)}</h2> */}
             <Cover url={coverUrl} />
             <div className="md:max-w-3xl lg:max-w-4xl mx-auto">
-                <Toolbar initialData={note} onCoverChange={setCoverUrl} />
+                {/* <Toolbar initialData={note} onCoverChange={setCoverUrl} /> */}
                 <Toolbar
                     initialData={{ ...note, title }}
                     onCoverChange={setCoverUrl}
