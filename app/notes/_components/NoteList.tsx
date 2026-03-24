@@ -1,46 +1,36 @@
 'use client'
 import { InferSelectModel } from "drizzle-orm";
 import { useParams, useRouter } from "next/navigation";
+import { FileIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { notesTable } from "@/app/db/schema";
 import Item from "@/app/notes/_components/Item";
-import { FileIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRefresh } from "@/hooks/use-refresh";
 import { useNoteTitle } from "@/hooks/use-note-title";
+import { getNotes } from "@/app/actions/getNotes";
 
 export type NoteSelectSchemaType = InferSelectModel<typeof notesTable>
 
-interface DocumentListProps {
+type Props = {
     parentDocumentId?: NoteSelectSchemaType['id']
     level?: number
 }
 
-const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
+const NotesList = ({ parentDocumentId, level = 0 }: Props) => {
     const params = useParams()
     const router = useRouter()
     const { count } = useRefresh()
-
     const [notes, setNotes] = useState<NoteSelectSchemaType[] | null>(null)
     const [loading, setLoading] = useState(false)
     const [expanded, setExpanded] = useState<Record<string, boolean>>({})
-
     const { title: globalTitle } = useNoteTitle()
 
     useEffect(() => {
         const fetchNotes = async () => {
             if (notes !== null) setLoading(true)
             try {
-                const url = parentDocumentId
-                    ? `/api/notes?parentDocument=${parentDocumentId}`
-                    : '/api/notes'
-
-                const res = await fetch(url)
-                if (!res.ok) {
-                    setNotes([])
-                    return
-                }
-                const data = await res.json()
+                const data = await getNotes(parentDocumentId)
                 setNotes(data)
             } catch (err) {
                 console.error("Fetch error:", err)
@@ -52,14 +42,14 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
         fetchNotes()
     }, [parentDocumentId, count])
 
-    const onExpand = (documentId: string) => {
+    const onExpand = (notesId: string) => {
         setExpanded(prev => ({
             ...prev,
-            [documentId]: !prev[documentId]
+            [notesId]: !prev[notesId]
         }))
     }
-    const onRedirect = (documentId: number) => {
-        router.push(`/notes/${documentId}`)
+    const onRedirect = (notesId: number) => {
+        router.push(`/notes/${notesId}`)
     }
 
     if (notes === null) {
@@ -101,14 +91,14 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
                         }
                         icon={FileIcon}
                         documentIcon={note.icon ?? undefined}
-                        active={params.documentId === String(note.id)}
+                        active={params.notesId === String(note.id)}
                         level={level}
                         onExpand={() => onExpand(String(note.id))}
                         expanded={expanded[String(note.id)]}
                     />
 
                     {expanded[String(note.id)] && (
-                        <DocumentList
+                        <NotesList
                             parentDocumentId={note.id}
                             level={level + 1}
                         />
@@ -119,4 +109,4 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
     )
 }
 
-export default DocumentList;
+export default NotesList;

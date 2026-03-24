@@ -1,13 +1,13 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
-import { useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
+import { useUser } from '@clerk/nextjs'
 import Image from 'next/image'
 import { PlusCircle } from 'lucide-react'
 import { useTransition } from 'react'
-import { createNote } from '../actions/notes'
+import { createNote } from '@/app/actions/notes'
 import { useRefresh } from '@/hooks/use-refresh'
 
 const NotesPage = () => {

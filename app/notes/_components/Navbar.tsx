@@ -1,11 +1,10 @@
-import { notesTable } from '@/app/db/schema';
 import { InferSelectModel } from 'drizzle-orm';
 import { MenuIcon } from 'lucide-react';
-import React from 'react'
-import Title from './Title';
-import Publish from './Publish';
-import Menu from './Menu';
-import Banner from './Banner';
+import { notesTable } from '@/app/db/schema';
+import Title from '@/app/notes/_components/Title';
+import Publish from '@/app/notes/_components/Publish';
+import Menu from '@/app/notes/_components/Menu';
+import Banner from '@/app/notes/_components/Banner';
 
 type Note = InferSelectModel<typeof notesTable>
 
@@ -39,8 +38,6 @@ export default function Navbar(
             {note.isArchived && (
                 <Banner notesId={note.id} />
             )}
-
-
         </div>
     )
 }

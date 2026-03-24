@@ -9,7 +9,7 @@ import { useEdgeStore } from '@/lib/edgestore'
 import { InferSelectModel } from 'drizzle-orm'
 import { ImageIcon, Smile, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { ComponentRef, useEffect, useRef, useState } from 'react'
+import { ComponentRef, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import TextareaAutosize from 'react-textarea-autosize'
 import { useRefresh } from '@/hooks/use-refresh'
@@ -38,7 +38,6 @@ export default function Toolbar(
     const { edgestore } = useEdgeStore()
     const router = useRouter()
     const { setTitle: setGlobalTitle } = useNoteTitle()
-
 
     const onIconSelect = async (newIcon: string) => {
         setIcon(newIcon);
@@ -91,7 +90,6 @@ export default function Toolbar(
     }
 
     const disableInput = () => setIsEditing(false);
-
     const onKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -167,7 +165,6 @@ export default function Toolbar(
                 </div>
             )}
 
-            {/* Title — always visible, below the action buttons */}
             <div className="pt-2">
                 {isEditing && !preview ? (
                     <TextareaAutosize

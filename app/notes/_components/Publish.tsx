@@ -24,7 +24,6 @@ export default function Publish(
 
     const [isPublished, setIsPublished] = useState(initialData.isPublished)
 
-
     const onCopy = () => {
         navigator.clipboard.writeText(url);
         setCopied(true)

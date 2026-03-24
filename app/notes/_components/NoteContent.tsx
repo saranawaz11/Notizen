@@ -3,7 +3,7 @@ import Cover from '@/app/components/Cover'
 import { notesTable } from '@/app/db/schema'
 import { InferSelectModel } from 'drizzle-orm'
 import { useState } from 'react'
-import Toolbar from './Toolbar'
+import Toolbar from '@/app/notes/_components/Toolbar'
 import dynamic from 'next/dynamic'
 import { updateNote } from '@/app/actions/notes'
 

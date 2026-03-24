@@ -1,26 +1,23 @@
 'use client'
-import { cn } from '@/lib/utils';
 import { ChevronsLeft, PlusCircle, Search, Plus, Trash, MenuIcon } from 'lucide-react';
 import React, { ComponentRef, startTransition, useCallback, useEffect, useRef, useState } from 'react'
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useMediaQuery } from "usehooks-ts";
-import UserItem from './UserItem';
-import Item from './Item';
-import { createNote } from '@/app/actions/notes';
 import { toast } from 'sonner';
-import DocumentList from './DocumentList';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import TrashBox from './TrashBox';
-import Navbar from './Navbar';
-import NavbarWrapper from './NavbarWrapper';
-import { useRefresh } from '@/hooks/use-refresh';
-import { useNoteTitle } from '@/hooks/use-note-title';
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import UserItem from '@/app/notes/_components/UserItem';
+import Item from '@/app/notes/_components/Item';
+import { createNote } from '@/app/actions/notes';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import TrashBox from '@/app/notes/_components/TrashBox';
+import NavbarWrapper from '@/app/notes/_components/NavbarWrapper';
+import { useRefresh } from '@/hooks/use-refresh';
+import NotesList from '@/app/notes/_components/NoteList';
 
 type Props = {
     onSearchOpen: () => void
 }
-
 
 export default function Navigation(
     { onSearchOpen }: Props
@@ -63,7 +60,6 @@ export default function Navigation(
         document.addEventListener('mouseup', handleMouseUp)
     }
 
-
     const collapseSidebar = useCallback(() => {
         if (sidebarRef.current && navbarRef.current) {
             sidebarRef.current.style.width = '0';
@@ -88,7 +84,6 @@ export default function Navigation(
     useEffect(() => {
         if (isMobile) collapseSidebar();
     }, [pathname, isMobile, collapseSidebar]);
-
 
     const collapse = () => {
         setIsCollapsed(true);
@@ -139,7 +134,7 @@ export default function Navigation(
                     <Item onClick={handleCreate} label='New Page' icon={PlusCircle} />
                 </div>
                 <div className="mt-4">
-                    <DocumentList />
+                    <NotesList />
                     <Item onClick={handleCreate}
                         icon={Plus}
                         label="Add a page" />

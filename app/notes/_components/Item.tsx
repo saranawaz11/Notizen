@@ -1,14 +1,17 @@
+import { ChevronDown, ChevronRight, LucideIcon, MoreHorizontal, Plus, Trash } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import React from 'react'
+import { toast } from 'sonner'
 import { archiveNote, createNote } from '@/app/actions/notes'
-import { NoteSelectSchemaType } from '@/app/zod-schema/note'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useRefresh } from '@/hooks/use-refresh'
 import { cn } from '@/lib/utils'
 import { useUser } from '@clerk/nextjs'
-import { ChevronDown, ChevronRight, LucideIcon, MoreHorizontal, Plus, Trash } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import React from 'react'
-import { toast } from 'sonner'
+import { InferSelectModel } from 'drizzle-orm'
+import { notesTable } from '@/app/db/schema'
+
+type NoteSelectSchemaType = InferSelectModel<typeof notesTable>
 
 type Props = {
     id?: NoteSelectSchemaType['id'],

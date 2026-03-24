@@ -1,5 +1,4 @@
 import { create } from 'zustand'
-// ← named import, not default
 type RefreshStore = {
     count: number
     refresh: () => void
