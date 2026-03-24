@@ -22,15 +22,26 @@ export default function Menu(
     console.log('From menu:- ', notesId);
     const router = useRouter()
     const { refresh } = useRefresh()
-    const onArchive = () => {
-        const promise = archiveNote(notesId)
-        toast.promise(promise, {
-            loading: 'Moving to trash...',
-            success: 'Note moved to trash',
-            error: 'Failed to archive note'
-        })
-        refresh();
-        router.push('/notes')
+    // const onArchive = () => {
+    //     const promise = archiveNote(notesId)
+    //     toast.promise(promise, {
+    //         loading: 'Moving to trash...',
+    //         success: 'Note moved to trash',
+    //         error: 'Failed to archive note'
+    //     })
+    //     refresh();
+    //     router.push('/notes')
+    // }
+
+    const onArchive = async () => {
+        try {
+            await archiveNote(notesId)
+            toast.success('Note moved to trash')
+            refresh()
+            router.push('/notes')
+        } catch {
+            toast.error('Failed to archive note')
+        }
     }
     return (
         <div>

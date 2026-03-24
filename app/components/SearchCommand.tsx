@@ -7,6 +7,7 @@ import { notesTable } from '../db/schema'
 import { File } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { getSearch } from '../actions/notes'
+import { Spinner } from '@/components/ui/spinner'
 
 type Note = InferSelectModel<typeof notesTable>
 
@@ -19,18 +20,32 @@ type Props = {
 
 
 export default function SearchCommand(
-    {  isOpen, onClose, onOpen }: Props 
+    { isOpen, onClose, onOpen }: Props
 ) {
     const { user } = useUser();
     const router = useRouter();
     const [documents, setDocuments] = useState<Note[]>([])
+    const [isLoading, setIsLoading] = useState(false)
+
     // const [isOpen, setIsOpen] = useState(false)
 
-    // useEffect(() => {
-    //     if (isOpen) {
-    //         getSearch().then(setDocuments).catch(console.error)
-    //     }
-    // }, [isOpen])
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const fetchDocuments = async () => {
+            setIsLoading(true)
+            try {
+                const docs = await getSearch()
+                setDocuments(docs)
+            } catch (err) {
+                console.error(err)
+            } finally {
+                setIsLoading(false)
+            }
+        }
+
+        fetchDocuments()
+    }, [isOpen])
 
     useEffect(() => {
         if (isOpen) {
@@ -71,24 +86,35 @@ export default function SearchCommand(
         <CommandDialog open={isOpen} onOpenChange={onClose}>
             <CommandInput placeholder={`Search ${user?.fullName}'s Notion...`} />
             <CommandList>
-                <CommandEmpty>No results found.</CommandEmpty>
-                <CommandGroup heading='Documents'>
-                    {documents?.map((document) => (
-                        <CommandItem
-                            key={document.id}
-                            value={`${document.id}-${document.title}`}
-                            title={document.title}
-                            onSelect={() => onSelect(String(document.id))}
-                        >
-                            {document.icon ? (
-                                <p className="mr-2 text-[18px]">{document.icon}</p>
-                            ) : (
-                                <File className="mr-2 h-4 w-4" />
-                            )}
-                            <span>{document.title}</span>
-                        </CommandItem>
-                    ))}
-                </CommandGroup>
+                {isLoading ? (
+                    <div className="flex items-center justify-center py-6">
+                        <span className="text-sm text-muted-foreground animate-pulse">
+                            {/* Searching... */}
+                            <Spinner />
+                        </span>
+                    </div>
+                ) : (
+                    <>
+                            <CommandEmpty>No results found.</CommandEmpty>
+                            <CommandGroup heading='Documents'>
+                                {documents?.map((document) => (
+                                    <CommandItem
+                                        key={document.id}
+                                        value={`${document.id}-${document.title}`}
+                                        title={document.title}
+                                        onSelect={() => onSelect(String(document.id))}
+                                    >
+                                        {document.icon ? (
+                                            <p className="mr-2 text-[18px]">{document.icon}</p>
+                                        ) : (
+                                            <File className="mr-2 h-4 w-4" />
+                                        )}
+                                        <span>{document.title}</span>
+                                    </CommandItem>
+                                ))}
+                            </CommandGroup>
+                    </>
+                )}
             </CommandList>
         </CommandDialog>
     )

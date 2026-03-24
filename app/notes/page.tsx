@@ -23,7 +23,6 @@ const NotesPage = () => {
                     refresh()
                     router.push(`/notes/${notesId}`)
                 })
-
             toast.promise(promise, {
                 loading: 'Creating a new note...',
                 success: 'New note created!',
@@ -33,19 +32,9 @@ const NotesPage = () => {
     }
 
     return (
-        <div className="flex space-y-4 h-full place-items-center justify-center items-center flex-col">
-            <Image
-                src={'/mpty.png'}
-                height={'300'}
-                width={'300'}
-                alt="empty"
-                className="dark:hidden" />
-            <Image
-                src={'/mpty.png'}
-                height={300}
-                width={300}
-                alt="empty"
-                className="hidden dark:block" />
+        <div className="flex space-y-4 h-screen place-items-center justify-center items-center flex-col">
+            <Image src={'/mpty.png'} height={300} width={300} alt="empty" className="dark:hidden" />
+            <Image src={'/mpty.png'} height={300} width={300} alt="empty" className="hidden dark:block" />
             <h2 className="text-lg font-medium">Welcome to {user?.firstName}&apos;s Notizen</h2>
             <Button onClick={onCreate}>
                 <PlusCircle className="h-4 w-4 mr-2" />
@@ -54,4 +43,5 @@ const NotesPage = () => {
         </div>
     )
 }
+
 export default NotesPage

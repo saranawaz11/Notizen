@@ -15,6 +15,7 @@ import Navbar from './Navbar';
 import NavbarWrapper from './NavbarWrapper';
 import { useRefresh } from '@/hooks/use-refresh';
 import { useNoteTitle } from '@/hooks/use-note-title';
+import Link from 'next/link';
 
 type Props = {
     onSearchOpen: () => void
@@ -121,21 +122,19 @@ export default function Navigation(
             })
         })
     }
-
     const [trashOpen, setTrashOpen] = useState(false)
 
-
     return (
-        <div className='h-full'>
+        <div className='h-full z-40'>
             <aside ref={sidebarRef} className={cn("group/sidebar h-screen bg-secondary w-60 z-100 overflow-y-auto relative flex flex-col", isResetting && 'transition ease-in-out duration-300',
                 isMobile && 'w-0'
             )}>
                 <div onClick={collapse} className={cn("h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100", isMobile && 'opacity-100')} role="button">
                     <ChevronsLeft className="h-6 w-6" />
                 </div>
-
                 <div>
                     <UserItem />
+                    <Link href={'/'} className='px-3 font-semibold text-sm cursor-pointer'>Notizen</Link>
                     <Item onClick={onSearchOpen} icon={Search} label='Search' isSearch />
                     <Item onClick={handleCreate} label='New Page' icon={PlusCircle} />
                 </div>
@@ -153,13 +152,11 @@ export default function Navigation(
                         </PopoverContent>
                     </Popover>
                 </div>
-
                 <div
                     onMouseDown={handleMousedown}
                     onClick={resetWidth}
                     className="opacity-0 group-hover/sidebar:opacity-100 transition cursor-ew-resize absolute h-full w-1 bg-primary/10 right-0 top-0" />
             </aside>
-
             <div ref={navbarRef}
                 className={cn('absolute top-0 z-99999 left-60 w-[calc(100%-240px)]',
                     isResetting && 'transition ease-in-out duration-300',
@@ -176,7 +173,6 @@ export default function Navigation(
                         {isCollapsed && <MenuIcon className="h-6 w-6 text-muted-foreground" role="button" />}
                     </nav>
                 )}
-
             </div>
         </div>
     );

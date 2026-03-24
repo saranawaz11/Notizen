@@ -39,7 +39,6 @@ export default function Item({
     const router = useRouter();
     const { user } = useUser();
 
-
     const handleExpand = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
@@ -82,7 +81,6 @@ export default function Item({
         })
     }
 
-
     return (
         <div onClick={onClick} role="button" style={{ paddingLeft: level ? `${(level * 12) + 12}px` : '12px' }} className={cn(
             "group min-h-[27px] text-sm py-1 pr-3 w-full hover:cursor-pointer hover:bg-primary/5 flex items-center text-muted-foreground font-medium",
@@ -116,7 +114,7 @@ export default function Item({
                                 <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
                             </div>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-60" align="start" side="right" forceMount>
+                        <DropdownMenuContent className="w-60 z-99999" align="start" side="right" forceMount>
                             <DropdownMenuItem onClick={onArchive}>
                                 <Trash className="h-4 w-4 mr-2" /> Delete
                             </DropdownMenuItem>

@@ -1,5 +1,6 @@
 import { getNoteById } from "@/lib/queries/GetNotesById";
 import NoteContent from "../_components/NoteContent";
+import { redirect } from "next/navigation";
 
 export default async function NotesIdPage({
     params,
@@ -14,7 +15,7 @@ export default async function NotesIdPage({
     const note = await getNoteById(documentId);
 
     if (!note) {
-        return <div>Not found</div>;
+        redirect('/notes?clear=true')
     }
     return <NoteContent note={note} />
 }
