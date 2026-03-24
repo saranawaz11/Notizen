@@ -5,9 +5,7 @@ export function TypewriterTextAnimation({ text }: { text: string }) {
     return (
         <>
             {text.split("").map((letter, i) => (
-
                 <motion.span key={i} className="relative">
-
                     <motion.span
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}

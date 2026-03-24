@@ -1,28 +1,28 @@
 'use client'
 import Image from "next/image"
+import { ImageIcon, X } from "lucide-react"
+import { toast } from "sonner"
+import { useEffect, useRef, useState } from "react"
+import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useEdgeStore } from "@/lib/edgestore"
 import { cn } from "@/lib/utils"
-import { ImageIcon, X } from "lucide-react"
-import { useParams, useRouter } from "next/navigation"
 import { removeCover } from "@/app/actions/remove-cover"
 import { changeCover } from "@/app/actions/change-cover"
-import { useEffect, useRef, useState } from "react"
-import { toast } from "sonner"
 
-interface CoverImageProps {
+type Props = {
     url?: string
     preview?: boolean
     onCoverChange?: (url: string | undefined) => void
 }
 
-const Cover = ({ url, preview, onCoverChange }: CoverImageProps) => {
-    const { edgestore } = useEdgeStore()
-    const params = useParams()
-    const router = useRouter()
-    const fileInputRef = useRef<HTMLInputElement>(null)
-    const [displayUrl, setDisplayUrl] = useState<string | undefined>(url)
+const Cover = ({ url, preview, onCoverChange }: Props) => {
+    const { edgestore } = useEdgeStore();
+    const params = useParams();
+    const router = useRouter();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [displayUrl, setDisplayUrl] = useState<string | undefined>(url);
 
     useEffect(() => {
         setDisplayUrl(url)

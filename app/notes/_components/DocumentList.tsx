@@ -1,14 +1,13 @@
 'use client'
-import { notesTable } from "@/app/db/schema";
 import { InferSelectModel } from "drizzle-orm";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Item from "./Item";
+import { notesTable } from "@/app/db/schema";
+import Item from "@/app/notes/_components/Item";
 import { FileIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRefresh } from "@/hooks/use-refresh";
 import { useNoteTitle } from "@/hooks/use-note-title";
-import { Spinner } from "@/app/components/Spinner";
 
 export type NoteSelectSchemaType = InferSelectModel<typeof notesTable>
 
@@ -30,21 +29,17 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
 
     useEffect(() => {
         const fetchNotes = async () => {
-            // ✅ Only show spinner if we already have data
             if (notes !== null) setLoading(true)
-
             try {
                 const url = parentDocumentId
                     ? `/api/notes?parentDocument=${parentDocumentId}`
                     : '/api/notes'
 
                 const res = await fetch(url)
-
                 if (!res.ok) {
                     setNotes([])
                     return
                 }
-
                 const data = await res.json()
                 setNotes(data)
             } catch (err) {
@@ -54,7 +49,6 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
                 setLoading(false)
             }
         }
-
         fetchNotes()
     }, [parentDocumentId, count])
 
@@ -64,12 +58,10 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
             [documentId]: !prev[documentId]
         }))
     }
-
     const onRedirect = (documentId: number) => {
         router.push(`/notes/${documentId}`)
     }
 
-    // ✅ FIRST LOAD → Skeleton (blocking)
     if (notes === null) {
         return (
             <div>

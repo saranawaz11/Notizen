@@ -1,17 +1,8 @@
 'use server'
-import { desc, eq, InferSelectModel } from 'drizzle-orm';
+import { desc, and, eq, InferSelectModel } from 'drizzle-orm';
 import { auth } from '@clerk/nextjs/server';
-import db from '../db';
-import { notesTable } from '../db/schema';
-
-// export async function archiveNote(id: number) {
-//     const { userId } = await auth();
-//     if (!userId) throw new Error('Not Authenticated');
-
-//     await db.update(notesTable)
-//         .set({ isArchived: true })
-//         .where(eq(notesTable.id, id));
-// }
+import db from '@/app/db';
+import { notesTable } from '@/app/db/schema';
 
 export async function createNote(title: string, parentDocument?: number) {
     const { userId } = await auth();
@@ -29,8 +20,6 @@ export async function createNote(title: string, parentDocument?: number) {
     return note.id;
 }
 
-import { and } from 'drizzle-orm';
-
 export async function getTrash() {
     const { userId } = await auth();
     if (!userId) throw new Error('Not Authenticated');
@@ -46,22 +35,6 @@ export async function getTrash() {
 
     return notes;
 }
-// export async function restoreNote(id: number) {
-//     const { userId } = await auth();
-//     if (!userId) throw new Error('Not Authenticated');
-
-//     await db.update(notesTable)
-//         .set({ isArchived: false })
-//         .where(eq(notesTable.id, id));
-// }
-
-// export async function removeNote(id: number) {
-//     const { userId } = await auth();
-//     if (!userId) throw new Error('Not Authenticated');
-
-//     await db.delete(notesTable)
-//         .where(eq(notesTable.id, id));
-// }
 
 export async function updateNote({
     id,
@@ -100,7 +73,6 @@ export async function archiveNote(id: number) {
         .limit(1);
 
     if (!existingNote[0]) throw new Error("Not found");
-
     const recursiveArchive = async (noteId: number) => {
         const children = await db
             .select()
@@ -110,8 +82,7 @@ export async function archiveNote(id: number) {
                     eq(notesTable.userId, userId),
                     eq(notesTable.parentDocument, noteId)
                 )
-            );
-
+        );
         for (const child of children) {
             await db
                 .update(notesTable)
@@ -136,7 +107,6 @@ export async function archiveNote(id: number) {
     await recursiveArchive(id);
     return note;
 }
-
 
 export async function restoreNote(id: number) {
     const { userId } = await auth();

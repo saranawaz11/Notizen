@@ -1,23 +1,21 @@
 'use client'
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import { useUser } from '@clerk/nextjs'
 import { InferSelectModel } from 'drizzle-orm'
 import React, { useEffect, useState } from 'react'
-import { notesTable } from '../db/schema'
-import { File } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { getSearch } from '../actions/notes'
+import { File } from 'lucide-react'
+import { useUser } from '@clerk/nextjs'
+import { notesTable } from '@/app/db/schema'
+import { getSearch } from '@/app/actions/notes'
 import { Spinner } from '@/components/ui/spinner'
 
 type Note = InferSelectModel<typeof notesTable>
-
 
 type Props = {
     isOpen: boolean
     onClose: () => void
     onOpen: () => void
 }
-
 
 export default function SearchCommand(
     { isOpen, onClose, onOpen }: Props
@@ -27,11 +25,8 @@ export default function SearchCommand(
     const [documents, setDocuments] = useState<Note[]>([])
     const [isLoading, setIsLoading] = useState(false)
 
-    // const [isOpen, setIsOpen] = useState(false)
-
     useEffect(() => {
         if (!isOpen) return;
-
         const fetchDocuments = async () => {
             setIsLoading(true)
             try {
@@ -43,7 +38,6 @@ export default function SearchCommand(
                 setIsLoading(false)
             }
         }
-
         fetchDocuments()
     }, [isOpen])
 
@@ -52,7 +46,6 @@ export default function SearchCommand(
             getSearch().then(setDocuments).catch(console.error)
         }
     }, [isOpen])
-
 
     useEffect(() => {
         const down = (e: KeyboardEvent) => {
@@ -64,18 +57,6 @@ export default function SearchCommand(
         document.addEventListener('keydown', down)
         return () => document.removeEventListener('keydown', down)
     }, [isOpen, onClose, onOpen])
-
-
-    // useEffect(() => {
-    //     const down = (e: KeyboardEvent) => {
-    //         if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-    //             e.preventDefault()
-    //             setIsOpen((prev) => !prev)
-    //         }
-    //     }
-    //     document.addEventListener('keydown', down)
-    //     return () => document.removeEventListener('keydown', down)
-    // }, [])
 
     const onSelect = (id: string) => {
         router.push(`/notes/${id}`)
@@ -89,7 +70,6 @@ export default function SearchCommand(
                 {isLoading ? (
                     <div className="flex items-center justify-center py-6">
                         <span className="text-sm text-muted-foreground animate-pulse">
-                            {/* Searching... */}
                             <Spinner />
                         </span>
                     </div>

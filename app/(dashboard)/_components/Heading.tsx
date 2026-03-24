@@ -1,11 +1,10 @@
 'use client'
 
-import React from 'react'
+import Link from 'next/link'
 import { TypewriterTextAnimation } from '@/app/(dashboard)/_components/TypewriterTextAnimation'
 import { SignInButton, useUser } from '@clerk/nextjs'
 import { Spinner } from '@/app/components/Spinner'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 
 export default function Heading() {

@@ -1,8 +1,8 @@
 "use server";
 
 import { auth } from "@clerk/nextjs/server";
-import db from "../db";
-import { notesTable } from "../db/schema";
+import db from "@/app/db";
+import { notesTable } from "@/app/db/schema";
 import { and, eq } from "drizzle-orm";
 
 export const changeCover = async (
@@ -10,7 +10,6 @@ export const changeCover = async (
     coverUrl: string
 ) => {
     const { userId } = await auth();
-
     if (!userId) throw new Error("Unauthorized");
 
     const result = await db
@@ -26,6 +25,5 @@ export const changeCover = async (
     if (!result) {
         throw new Error("Note not found");
     }
-
     return { success: true };
 };

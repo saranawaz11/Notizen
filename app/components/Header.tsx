@@ -16,7 +16,7 @@ function Header() {
     console.log(user)
 
     return (
-        <header className='drop-shadow-lg max-w-6xl mt-2 rounded bg-amber-100 mx-auto p-7 flex justify-between items-center'>
+        <header className='drop-shadow-lg max-w-6xl mt-2 rounded bg-green-900 mx-auto p-7 flex justify-between items-center'>
             <p className="font-bold text-3xl">
                 Notizen
             </p>

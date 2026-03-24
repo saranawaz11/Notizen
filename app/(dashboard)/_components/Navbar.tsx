@@ -1,12 +1,12 @@
 "use client"
 
-import { cn } from "@/lib/utils";
-import Logo from "./Logo";
-import { SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { SignUpButton, UserButton, useUser } from "@clerk/nextjs";
 import { Spinner } from "@/app/components/Spinner";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/app/components/Mode-Toggle";
+import Logo from "@/app/(dashboard)/_components/Logo";
 
 export default function Navbar() {
     const { isSignedIn, isLoaded } = useUser()

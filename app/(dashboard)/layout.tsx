@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "./_components/Navbar";
+import Navbar from "@/app/(dashboard)/_components/Navbar";
 
 export default function DashboardLayout({
     children,
