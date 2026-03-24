@@ -134,7 +134,7 @@ export default function Navigation(
                 </div>
                 <div>
                     <UserItem />
-                    <Link href={'/'} className='px-3 font-semibold text-sm cursor-pointer'>Notizen</Link>
+                    <Link href={'/'} className='px-3 font-bold text-[#655560] dark:text-white text-sm cursor-pointer'>Notizen</Link>
                     <Item onClick={onSearchOpen} icon={Search} label='Search' isSearch />
                     <Item onClick={handleCreate} label='New Page' icon={PlusCircle} />
                 </div>

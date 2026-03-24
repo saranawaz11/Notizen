@@ -1,6 +1,5 @@
 'use client'
 import { notesTable } from "@/app/db/schema";
-// import { NoteSelectSchemaType } from "@/app/zod-schema/note";
 import { InferSelectModel } from "drizzle-orm";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -9,53 +8,69 @@ import { FileIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRefresh } from "@/hooks/use-refresh";
 import { useNoteTitle } from "@/hooks/use-note-title";
+import { Spinner } from "@/app/components/Spinner";
 
 export type NoteSelectSchemaType = InferSelectModel<typeof notesTable>
 
 interface DocumentListProps {
     parentDocumentId?: NoteSelectSchemaType['id']
     level?: number
-    data?: NoteSelectSchemaType[]
 }
 
 const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
     const params = useParams()
     const router = useRouter()
     const { count } = useRefresh()
-    const [notes, setNotes] = useState<NoteSelectSchemaType[] | undefined>(undefined)
+
+    const [notes, setNotes] = useState<NoteSelectSchemaType[] | null>(null)
+    const [loading, setLoading] = useState(false)
     const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
     const { title: globalTitle } = useNoteTitle()
 
-
     useEffect(() => {
         const fetchNotes = async () => {
-            const url = parentDocumentId
-                ? `/api/notes?parentDocument=${parentDocumentId}`
-                : '/api/notes'
+            // ✅ Only show spinner if we already have data
+            if (notes !== null) setLoading(true)
 
-            const res = await fetch(url)
-            if (!res.ok) return;
-            const data = await res.json()
-            setNotes(data)
+            try {
+                const url = parentDocumentId
+                    ? `/api/notes?parentDocument=${parentDocumentId}`
+                    : '/api/notes'
+
+                const res = await fetch(url)
+
+                if (!res.ok) {
+                    setNotes([])
+                    return
+                }
+
+                const data = await res.json()
+                setNotes(data)
+            } catch (err) {
+                console.error("Fetch error:", err)
+                setNotes([])
+            } finally {
+                setLoading(false)
+            }
         }
+
         fetchNotes()
     }, [parentDocumentId, count])
 
     const onExpand = (documentId: string) => {
-        setExpanded(prevExpanded => ({
-            ...prevExpanded,
-            [documentId]: !prevExpanded[documentId]
+        setExpanded(prev => ({
+            ...prev,
+            [documentId]: !prev[documentId]
         }))
     }
-
-
 
     const onRedirect = (documentId: number) => {
         router.push(`/notes/${documentId}`)
     }
 
-    if (notes === undefined) {
+    // ✅ FIRST LOAD → Skeleton (blocking)
+    if (notes === null) {
         return (
             <div>
                 <Item.skeleton level={level} />
@@ -68,6 +83,7 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
             </div>
         )
     }
+
     return (
         <>
             <p
@@ -80,12 +96,17 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
             >
                 No pages inside
             </p>
+
             {notes.map((note) => (
                 <div key={note.id}>
                     <Item
                         id={note.id}
                         onClick={() => onRedirect(note.id)}
-                        label={params.notesId === String(note.id) ? globalTitle || note.title : note.title}
+                        label={
+                            params.notesId === String(note.id)
+                                ? globalTitle || note.title
+                                : note.title
+                        }
                         icon={FileIcon}
                         documentIcon={note.icon ?? undefined}
                         active={params.documentId === String(note.id)}
@@ -93,14 +114,17 @@ const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
                         onExpand={() => onExpand(String(note.id))}
                         expanded={expanded[String(note.id)]}
                     />
+
                     {expanded[String(note.id)] && (
-                        <DocumentList parentDocumentId={note.id} level={level + 1} />
+                        <DocumentList
+                            parentDocumentId={note.id}
+                            level={level + 1}
+                        />
                     )}
                 </div>
             ))}
         </>
-    );
+    )
 }
 
 export default DocumentList;
-

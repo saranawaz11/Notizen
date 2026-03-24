@@ -31,8 +31,8 @@ const Cover = ({ url, preview, onCoverChange }: CoverImageProps) => {
     const onUpload = async (file: File) => {
         try {
             const res = await edgestore.publicFiles.upload({ file, options: { replaceTargetUrl: url } })
-            setDisplayUrl(res.url)        // show immediately after upload
-            onCoverChange?.(res.url)      // update parent
+            setDisplayUrl(res.url)
+            onCoverChange?.(res.url)     
             await changeCover(Number(params.notesId), res.url)
             router.refresh()
         } catch {
@@ -42,13 +42,13 @@ const Cover = ({ url, preview, onCoverChange }: CoverImageProps) => {
 
     const onRemove = async () => {
         try {
-            setDisplayUrl(undefined)      // remove immediately
+            setDisplayUrl(undefined)     
             onCoverChange?.(undefined)
             await removeCover(Number(params.notesId))
             router.refresh()
         } catch {
             toast.error("Failed to remove cover")
-            setDisplayUrl(url)            // revert on failure
+            setDisplayUrl(url)         
         }
     }
 

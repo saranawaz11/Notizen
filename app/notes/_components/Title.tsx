@@ -15,44 +15,47 @@ type Props = {
 export default function Title(
   { initialData }: Props
 ) {
-  const [isEditing, setIsEditing] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [title, setTitle] = useState(initialData.title || 'Untitled')
-  const [localTitle, setLocalTitle] = useState('')
-  const { title: globalTitle, setTitle: setGlobalTitle } = useNoteTitle()
+  // const [isEditing, setIsEditing] = useState(false);
+  // const inputRef = useRef<HTMLInputElement>(null);
+  // // const [title, setTitle] = useState(initialData.title || 'Untitled')
+  // const [localTitle, setLocalTitle] = useState('')
+  const { title, setTitle, icon, setIcon } = useNoteTitle()
+
+
+  // useEffect(() => {
+  //   setGlobalTitle(initialData.title || 'Untitled')
+  // }, [initialData.id])
+
+  const [isEditing, setIsEditing] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  // const { refresh } = useRefresh()
 
   useEffect(() => {
-    setGlobalTitle(initialData.title || 'Untitled')
+    setTitle(initialData.title || 'Untitled')
   }, [initialData.id])
 
   const enableInput = () => {
-    setLocalTitle(initialData.title)
-    setTitle(initialData.title);
-    setIsEditing(true);
+    setIsEditing(true)
     setTimeout(() => {
-      inputRef.current?.focus();
+      inputRef.current?.focus()
       inputRef.current?.setSelectionRange(0, inputRef.current.value.length)
     }, 0)
   }
 
+
   const { refresh } = useRefresh()
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newTitle = event.target.value;
-    setLocalTitle(newTitle);
-    setGlobalTitle(newTitle)
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTitle = e.target.value
+    setTitle(newTitle)
     startTransition(async () => {
       try {
-        await updateNote({
-          id: initialData.id,
-          title: newTitle || 'Untitled'
-        })
+        await updateNote({ id: initialData.id, title: newTitle || 'Untitled' })
         refresh()
       } catch (error) {
-        console.error('Failed to update note:', error);
+        console.error('Failed to update note:', error)
       }
-    });
-
-  };
+    })
+  }
 
   const disableInput = () => {
     setIsEditing(false)
@@ -72,11 +75,11 @@ export default function Title(
     <div className="flex items-center gap-x-1">
       {!!initialData.icon && <p>{initialData.icon}</p>}
       {isEditing ? (
-        <Input ref={inputRef} onClick={enableInput} onBlur={disableInput} onChange={onChange} onKeyDown={onKeyDown} value={localTitle} className="h-7 px-2 focus-visible:ring-transparent" />
+        <Input ref={inputRef} onClick={enableInput} onBlur={disableInput} onChange={onChange} onKeyDown={onKeyDown} value={title} className="h-7 px-2 focus-visible:ring-transparent" />
       ) : (
         <Button onClick={enableInput} variant={'ghost'} size={'sm'} className="font-normal h-auto p-1">
           <span className="truncate">
-              {globalTitle || 'Untitled'}
+              {title || 'Untitled'}
           </span>
         </Button>
       )}

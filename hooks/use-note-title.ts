@@ -1,13 +1,16 @@
 import { create } from 'zustand'
 
-type TitleStore = {
+// hooks/use-note-title.ts
+type NoteTitleStore = {
     title: string
+    icon: string
     setTitle: (title: string) => void
+    setIcon: (icon: string) => void
 }
 
-const useTitleStore = create<TitleStore>((set) => ({
+export const useNoteTitle = create<NoteTitleStore>((set) => ({
     title: '',
-    setTitle: (title) => set({ title })
-}))
-
-export const useNoteTitle = () => useTitleStore()
+      icon: '',
+      setTitle: (title) => set({ title }),
+      setIcon: (icon) => set({ icon }),
+  }))

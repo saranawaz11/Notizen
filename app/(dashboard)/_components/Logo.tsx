@@ -12,7 +12,7 @@ const Logo = () => {
         <div className="hidden md:flex items-center gap-x-1">
             <Image src='/logo.png' alt="logo" height={60} width={60} className="dark:hidden" />
             <Image src='/logo-dark.png' alt="logo" height={60} width={60} className="hidden dark:block" />
-            <p className={cn('font-semibold text-3xl', font.className)}>Notizen</p>
+            <p className={cn('font-semibold text-3xl text-[#655560]', font.className)}>Notizen</p>
         </div>);
 }
 
